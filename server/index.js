@@ -48,7 +48,7 @@ app.get("/user/:email", authenticateToken, async (req, res)=>{
     }
 })
 
-app.post("/user/add", authenticateToken, async (request, response) => {
+app.post("/admin/user", authenticateToken, async (request, response) => {
     const existingUser = await userDb.findOne({ email: request.body.email})
 
     if(existingUser) return response.status(400).send({message: "User already exist"})
@@ -63,6 +63,18 @@ app.post("/user/add", authenticateToken, async (request, response) => {
         response.status(200).send({message: "User had been created successfully"});// should have problem here
     });
 });
+
+
+app.delete("/admin/user/:email", authenticateToken, async (request, response) => {
+    try {
+        await userDb.deleteOne( { "email" : request.params.email } )
+        response.status(200).send("success")
+     } catch (e) {
+        console.log(e)
+        response.status(400)//check code 
+     }
+})
+
 
 
 app.post("/login", async (request, response) => {
@@ -85,14 +97,14 @@ app.post("/login", async (request, response) => {
     }
 });
 
-app.get("/admin/allTeachers", async (request, response) => {
+app.get("/admin/allTeachers", authenticateToken, async (request, response) => {
     await userDb.find({ userType: "teacher"}).toArray(function(error, documents) {
         if (error) throw error;
         response.send(documents);
     });
 })
 
-app.get("/admin/allStudents", async (request, response) => {
+app.get("/admin/allStudents", authenticateToken, async (request, response) => {
     await userDb.find({ userType: "student"}).toArray(function(error, documents) {
         if (error) throw error;
         response.send(documents);

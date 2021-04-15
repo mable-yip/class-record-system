@@ -1,12 +1,15 @@
 import React from "react"
-import { Table } from "react-bootstrap"
+import { Button, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../..";
+import { deleteUser } from "../../actions/user";
 
-const DisplayTable = (props: {list: any}) => {
+const DisplayTable = (props) => {
+    const dispatch = useDispatch()
+    
+    console.log("listArray", props.list)
+    const listArray  = Object.values(props.list)
 
-    const { teacherList } = useSelector((state: RootState) => state.admin)
-    console.log(teacherList)
+    console.log("listArray", listArray)
     return (
         <div>
             <Table striped bordered hover>
@@ -15,17 +18,23 @@ const DisplayTable = (props: {list: any}) => {
                     <th>Email</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        teacherList.map((user: { email: string, firstName: string, lastName: string }) => 
+                        listArray.map((user) => 
                             <tr key={user.email}>
                                 <td> {user.email} </td>
                                 <td> {user.firstName} </td>
                                 <td> {user.lastName} </td>
+                                <td> 
+                                    <Button className="btn btn-outline-danger" onClick={()=>dispatch(deleteUser(user.email, props.userType))}>
+                                         Delete 
+                                    </Button>                             
+                                </td>
                             </tr>                        
-                            )
+                        )
                     }
                 </tbody>
             </Table>

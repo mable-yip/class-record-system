@@ -17,9 +17,11 @@ API.interceptors.request.use((req) => {
 export const authenicate = (signinInfo: {email: string, password: string}) => axios.post<{auth: boolean, accessToken: string|null, message: string}>(`${url}/login`, signinInfo)
 
 export const getUser = (email: string) => API.get(`/user/${email}`)
-export const createUser = (user: {email: string, password: string, firstName: string, lastName: string, userType: string}) => API.post("/user/add", user)
-
+export const createUser = (user: {email: string, password: string, firstName: string, lastName: string, userType: string}) => 
+    API.post("/admin/user", user)
+export const deleteUser = (email: string) => API.delete(`/admin/user/${email}`)
 export const getAllTeachers = () => API.get("/admin/allTeachers")
+export const getAllStudents = () => API.get("/admin/allStudents")
 
 
 

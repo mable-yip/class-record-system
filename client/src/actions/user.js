@@ -11,35 +11,81 @@ export const getUser = (email) => async() => {
 
 export const createUser = (user) => async(dispatch) => {
     try{
-        console.log(user)
         const userType = user.userType
         const result = await api.createUser(user)
-
-        console.log(typeof result.config.data)
 
         if (userType === "teacher"){
             dispatch({
                 type: "ADD_TEACHER",
-                playload: JSON.parse(result.config.data)
+                payload: JSON.parse(result.config.data)
             })
-        }else if (userType === "student"){
+        } else if (userType === "student"){
             dispatch({
                 type: "ADD_STUDENT",
-                playload: JSON.parse(result.config.data)
+                payload: JSON.parse(result.config.data)
             })
         }
+    } catch(error){
+        alert(error.message)
+    }
+}
+
+export const deleteUser = (email, userType) => async(dispatch) => {
+    try{
+        await api.deleteUser(email)
+
+        if (userType === "teacher"){
+            dispatch({
+                type: "DELETE_TEACHER",
+                payload: email
+            })
+        } else if (userType === "student"){
+            dispatch({
+                type: "DELETE_STUDENT",
+                payload: email
+            })
+        }
+    } catch (error){
+        alert(error.message)
+    }
+}
+
+
+export const getAllTeachers = () => async(dispatch) => {
+    try{
+        const { data } = await api.getAllTeachers()
+
+        //convert array to object 
+        const dataObj = data.reduce((obj, item) => {
+            return {
+                ...obj, [item['email']]: item,
+            }
+        }, {})
+
+        dispatch({
+            type: "FETCH_TEACHERS",
+            payload: dataObj
+        })
 
     } catch(error){
         alert(error.message)
     }
 }
 
-export const getAllTeachers = () => async(dispatch) => {
+export const getAllStudents = () => async(dispatch) => {
     try{
-        const result = await api.getAllTeachers()
+        const { data } = await api.getAllStudents()
+
+        //convert array to object 
+        const dataObj = data.reduce((obj, item) => {
+            return {
+                ...obj, [item['email']]: item,
+            }
+        }, {})
+
         dispatch({
-            type: "FETCH_TEACHER",
-            playload: result.data
+            type: "FETCH_STUDENTS",
+            payload: dataObj
         })
 
     } catch(error){

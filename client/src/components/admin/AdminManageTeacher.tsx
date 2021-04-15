@@ -26,7 +26,7 @@ const AdminManageTeacher = () => {
             <Container>
                 <Row>
                     <Col>
-                        <DisplayTable list={teacherList}/>
+                        <DisplayTable list={teacherList} userType="teacher"/>
                     </Col>
                     <Col>
                         <InputForm userType="teacher"/>

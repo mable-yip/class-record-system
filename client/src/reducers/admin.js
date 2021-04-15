@@ -1,27 +1,39 @@
+import { createAction, createReducer } from '@reduxjs/toolkit'
+
+export const fetchTeacher = createAction('FETCH_TEACHERS')
+export const fetchStudent = createAction('FETCH_STUDENTS')
+export const addTeacher = createAction('ADD_TEACHER')
+export const addStudent = createAction('ADD_STUDENT')
+export const deleteTeacher = createAction('DELETE_TEACHER')
+export const deleteStudent = createAction('DELETE_STUDENT')
+
 
 const initalState = {
-    teacherList: [],
-    studentList: []
-    
+    teacherList: {},
+    studentList: {}
 }
 
-const adminReducer = (state=initalState, action) => {
-    switch (action.type) {
-        case "FETCH_TEACHER":
-            return {...state, teacherList: action.playload}
-        case "ADD_TEACHER":
-            return {...state, teacherList: [...state.teacherList, action.playload]}
-        case "ADD_STUDENT":
-            return {...state, studentList: [...state.studentList, action.playload]}
-        case "DELETE_TEACHER":
-            return state.teacherList(teacher => teacher.email !== action.payload)
-        case "DELETE_STUDENT":
-            return state.teacherList(student => student.email !== action.payload)
-        default:
-            return state
+
+const adminReducer = createReducer(initalState, {
+    [fetchTeacher.type]: (state, {payload}) => {
+        state.teacherList = payload
+    },
+    [fetchStudent.type]: (state, {payload}) => {
+        state.studentList = payload
+    },
+    [addTeacher.type]: (state, {payload}) => {
+        state.teacherList[payload.email] = payload
+    },
+    [addStudent.type]: (state, {payload}) => {
+        state.studentList[payload.email] = payload
+    },
+    [deleteTeacher.type]: (state, {payload}) => {
+        delete state.teacherList[payload]
+    },
+    [deleteStudent.type]: (state, {payload}) => {
+        delete state.studentList[payload]
     }
-  };
-  
+})  
 
 export default adminReducer;
   
