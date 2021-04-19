@@ -64,7 +64,6 @@ app.post("/admin/user", authenticateToken, async (request, response) => {
     });
 });
 
-
 app.delete("/admin/user/:email", authenticateToken, async (request, response) => {
     try {
         await userDb.deleteOne({ "email" : request.params.email })
