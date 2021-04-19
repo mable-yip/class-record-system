@@ -76,7 +76,6 @@ app.delete("/admin/user/:email", authenticateToken, async (request, response) =>
 })
 
 
-
 app.post("/login", async (request, response) => {
     const user = await userDb.findOne({ email: request.body.email})
     
