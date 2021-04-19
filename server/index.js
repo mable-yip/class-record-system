@@ -39,7 +39,7 @@ app.listen(PORT, () => {
 });
 
 
-app.get("/user/:email", authenticateToken, async (req, res)=>{
+app.get("/user/:email", async (req, res)=>{
     const user = await userDb.findOne({ email: req.params.email})
     if (user == null){
         res.status(400).send("Cannot find user")
@@ -67,7 +67,7 @@ app.post("/admin/user", authenticateToken, async (request, response) => {
 
 app.delete("/admin/user/:email", authenticateToken, async (request, response) => {
     try {
-        await userDb.deleteOne( { "email" : request.params.email } )
+        await userDb.deleteOne({ "email" : request.params.email })
         response.status(200).send("success")
      } catch (e) {
         console.log(e)
@@ -110,6 +110,14 @@ app.get("/admin/allStudents", authenticateToken, async (request, response) => {
         response.send(documents);
     });
 })
+
+
+app.get("/teacher/:email", authenticateToken, async (request, response) => {
+    await userDb.update({ "email" : request.params.email },
+    {$set: { "EmployeeName" : "NewMartin"}})
+})
+
+
 
 function authenticateToken(req, res, next){
     const authHeader = req.headers['authorization']

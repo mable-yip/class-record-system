@@ -1,24 +1,27 @@
 import React, {useState} from 'react'
 import { Button, Form, FormGroup } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { createUser } from '../../actions/user';
+import { createUser } from '../../actions/admin';
+import { Teacher, Student, UserType} from '../../interface/models'
 
-const InputForm = (props: {userType: string} ) => {
+const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT} ) => {
     const dispatch = useDispatch()
-    const [form, setForm] = useState({ firstName:"", lastName: "", email:"", password:"", userType: props.userType, confirmedPassword: ""})
-    const handleOnChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const [form, setForm] = useState<Teacher|Student>({ firstName:"", lastName: "", email:"", password:"", userType: props.userType})
+    const [confirmedPassword, setConfirmedPassword] = useState("")
+
+    const handleOnChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value
         setForm({...form, [key]: newValue})
     }
 
     const handleSubmit = () => {
-        if (form.password !== form.confirmedPassword){
+        if (form.password !== confirmedPassword){
             alert("Passwords does not match!")
         } else{
             dispatch(createUser(form))
-            setForm({ firstName:"", lastName: "", email:"", password:"", userType: props.userType, confirmedPassword: ""})
+            setForm({ firstName:"", lastName: "", email:"", password:"", userType: props.userType})
+            setConfirmedPassword("")
         }
-
     }
 
     return (
@@ -69,8 +72,8 @@ const InputForm = (props: {userType: string} ) => {
                     <Form.Control 
                         type="password" 
                         placeholder="Confirm Password" 
-                        value={form.confirmedPassword}
-                        onChange={handleOnChange("confirmedPassword")}
+                        value={confirmedPassword}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setConfirmedPassword(event.target.value)}
                     />
                 </FormGroup>
 

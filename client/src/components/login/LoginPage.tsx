@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Form, FormGroup } from 'react-bootstrap';
 import './LoginPage.css'
-import { login } from '../../actions/login'
+import { login } from '../../actions/auth'
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
 

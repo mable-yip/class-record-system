@@ -1,15 +1,21 @@
 import React from "react"
 import { Button, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux";
-import { deleteUser } from "../../actions/user";
+import { deleteStudent } from "../../reducers/teacher";
+import { UserType, Teacher, Student} from '../../interface/models'
 
-const DisplayTable = (props) => {
+interface Props { 
+    list: { 
+        [email: string]: Student 
+    }, 
+    userType: UserType.STUDENT 
+}
+
+
+const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
-    
-    console.log("listArray", props.list)
     const listArray  = Object.values(props.list)
 
-    console.log("listArray", listArray)
     return (
         <div>
             <Table striped bordered hover>
@@ -29,7 +35,7 @@ const DisplayTable = (props) => {
                                 <td> {user.firstName} </td>
                                 <td> {user.lastName} </td>
                                 <td> 
-                                    <Button className="btn btn-outline-danger" onClick={()=>dispatch(deleteUser(user.email, props.userType))}>
+                                    <Button className="btn btn-outline-danger" onClick={()=>dispatch(deleteStudent(user.email))}>
                                          Delete 
                                     </Button>                             
                                 </td>
