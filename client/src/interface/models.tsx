@@ -38,7 +38,5 @@ export interface AdminReducerState {
 }
 
 export interface TeacherReducerState {
-    studentList: {
-        [email: string]: Student
-    }
+    studentList: string[]
 }

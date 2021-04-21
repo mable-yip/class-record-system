@@ -24,8 +24,8 @@ export const deleteUser = (email: string) => API.delete(`/admin/user/${email}`)
 export const getAllTeachers = () => API.get("/admin/allTeachers")
 export const getAllStudents = () => API.get("/admin/allStudents")
 
-export const updateTeacher = (email: string, updatedteacher: Teacher) => API.patch(`/teacher/${email}`, updatedteacher)// change to student list 
+export const addStudentToTeacher = (teacherEmail: string, studentEmail: {studentEmail: string}) => 
+    API.patch(`/teacher/${teacherEmail}/addStudent`, studentEmail)
 
-
-
-
+export const removeStudentFromTeacher = (teacherEmail: string, studentEmail: {studentEmail: string}) => 
+    API.patch(`/teacher/${teacherEmail}/removeStudent`, studentEmail)

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navbar, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from "react-router-dom";
+import { AUTH_SIGN_OUT } from "../../actions/types";
 
 const NavbarComponent = () => {
     const loaclStorage = localStorage.getItem('profile')
@@ -13,7 +14,7 @@ const NavbarComponent = () => {
     const history = useHistory()
 
     const logout = () => {
-        dispatch({ type: "LOGOUT" });
+        dispatch({ type: AUTH_SIGN_OUT });
     
         history.push('/login');
         setUser(null);

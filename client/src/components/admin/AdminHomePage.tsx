@@ -1,9 +1,10 @@
 import NavbarComponent from '../common/NavBarComponent'
 import { useDispatch } from 'react-redux';
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { getUser } from '../../actions/common/user'
 import { Link } from 'react-router-dom';
 import { UserType } from '../../interface/models'
+import { Badge, Col, Row } from 'react-bootstrap';
 
 const AdminHomePage = () => {
     const loaclStorage = localStorage.getItem('profile')
@@ -18,12 +19,20 @@ const AdminHomePage = () => {
     return (
         <div>
             <NavbarComponent />
-            <Link to={`/admin/manageUser/${UserType.TEACHER}`}>
-                Manage Teachers
-            </Link>
-            <Link to={`/admin/manageUser/${UserType.STUDENT}`}>
-                Manage Students 
-            </Link>
+            <Row>
+                <Col md={{ span: 5, offset: 5 }}>
+                    <Link to={`/admin/manageUser/${UserType.TEACHER}`}>
+                        <h2>Manage Teachers</h2>
+                    </Link>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={{ span: 5, offset: 5 }}>
+                    <Link to={`/admin/manageUser/${UserType.STUDENT}`}>
+                        <h2>Manage Students</h2>
+                    </Link>
+                </Col>
+            </Row>
         </div>
 
     )

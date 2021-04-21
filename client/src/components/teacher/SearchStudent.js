@@ -2,12 +2,17 @@ import React, { useState } from "react"
 import { Button, FormControl, InputGroup } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { getUser } from "../../actions/common/user"
-import { addStudent } from "../../reducers/teacher"
+import { teacherAddStudent } from "../../actions/teacher"
+
+
 
 const SearchStudent = () => {
     const [ input, setInput] = useState("")
     const [ searchResult, setSearchResult ] = useState({})
     const dispatch = useDispatch()
+    const loaclStorage = localStorage.getItem('profile')
+    const initalState = loaclStorage ? loaclStorage: ""
+    const [{ email }, setAuthData] = useState(JSON.parse(initalState))
 
     const handleClick = async () => {
         const student = await dispatch(getUser(input)) // why need to put dispatch here???????????????// no need to called the getUser function in api file directly 
@@ -24,20 +29,14 @@ const SearchStudent = () => {
                     <h5> First Name: {searchResult.firstName}</h5> 
                     <h5> Last Name: {searchResult.lastName}</h5> 
                     <h5> Email: {searchResult.email}</h5> 
-                    <Button onClick={()=> dispatch(addStudent(searchResult))}> Add </Button>
+                    <Button onClick={()=> dispatch(teacherAddStudent(searchResult.email, email))}> Add </Button>
                 </div>
             )
         } 
     }
 
-    const handleSubmit = () => {
-        setSearchResult({})
-    }
-
     return (
         <div>
-            <h3>Search Student Page </h3>
-
             <InputGroup>
                 <FormControl
                     type="text"

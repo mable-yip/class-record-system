@@ -1,20 +1,18 @@
-import React from "react"
+import React, { useState } from "react"
 import { Button, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux";
-import { deleteStudent } from "../../reducers/teacher";
-import { UserType, Teacher, Student} from '../../interface/models'
+import { teacherRemoveStudent } from "../../actions/teacher";
 
 interface Props { 
-    list: { 
-        [email: string]: Student 
-    }, 
-    userType: UserType.STUDENT 
+    emails: string[]
 }
 
 
 const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
-    const listArray  = Object.values(props.list)
+    const loaclStorage = localStorage.getItem('profile')
+    const initalState = loaclStorage ? loaclStorage: ""
+    const [{ email }, setAuthData] = useState(JSON.parse(initalState))
 
     return (
         <div>
@@ -22,20 +20,16 @@ const DisplayTable = (props: Props) => {
                 <thead>
                     <tr>
                     <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
                     <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        listArray.map((user) => 
-                            <tr key={user.email}>
-                                <td> {user.email} </td>
-                                <td> {user.firstName} </td>
-                                <td> {user.lastName} </td>
+                        props.emails.map((studentEmail) => 
+                            <tr key={studentEmail}>
+                                <td> {studentEmail} </td>
                                 <td> 
-                                    <Button className="btn btn-outline-danger" onClick={()=>dispatch(deleteStudent(user.email))}>
+                                    <Button className="btn btn-outline-danger" onClick={()=>dispatch(teacherRemoveStudent(studentEmail, email))}>
                                          Delete 
                                     </Button>                             
                                 </td>
