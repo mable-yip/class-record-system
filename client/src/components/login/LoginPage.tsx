@@ -15,10 +15,6 @@ const LoginPage = () => {
         setSigninInfo({...signinInfo, [key]: newValue})
     }
 
-    const handleClick = () => {
-        dispatch(login(signinInfo, history))
-    }
-
     return (
         <div>
             <Form className="login-form">
@@ -45,7 +41,7 @@ const LoginPage = () => {
                 </FormGroup>
                 <Button
                     className="btn-lg btn-dark btn-block"
-                    onClick={handleClick}
+                    onClick={() => dispatch(login(signinInfo, history))}
                 >
                     Log in
                 </Button>
