@@ -37,6 +37,32 @@ export interface AdminReducerState {
     }
 }
 
+export enum CycleType {
+    DAILY = 'daily',
+    WEEKLY = 'weekly',
+    FORNIGHTLY = 'fornughtly',
+    MONTHLY = 'monthly'
+}
+
+export interface Repeat {
+    cycle: string
+    startTime: string,
+    endTime: string
+}
+
+export interface ClassModel {
+    _id: string 
+    className: string 
+    teacherEmail: string
+    studentsEmail: string[]
+    startDate: string
+    repeat: Repeat
+}
+
+export type ClassModelPreview = Omit<ClassModel, "_id"> 
+
 export interface TeacherReducerState {
-    studentList: string[]
+    classList: {
+        [classId: string]: ClassModel
+    }
 }

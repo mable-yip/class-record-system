@@ -7,6 +7,7 @@ import { default as mongodb } from 'mongodb'
 import authenticateToken  from './middleware/auth.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import ObjectId from 'objectid'
 
 let MongoClient = mongodb.MongoClient
 const app = express();
@@ -16,11 +17,11 @@ app.use(cors());
 dotenv.config()
 
 app.use("/user", userRouter);
-let database, userDb, classHistoryDb;
+let database, userDb, classHistoryDb, classDb;
 
 const CONNECTION_URL = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.6iqab.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 const DATABASE_NAME = "class-record-system"
-const PORT = 5000
+const PORT = 5001
 
 app.listen(PORT, () => {
     MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
@@ -29,14 +30,18 @@ app.listen(PORT, () => {
         }
         database = client.db(DATABASE_NAME);
         userDb = database.collection("user");
+        console.log("userDb", userDb)
         classHistoryDb = database.collection("classHistory");
+        console.log("classHistoryDb", classHistoryDb)
+        classDb = database.collection("class");
+        console.log("classDb", classDb)
         console.log("Connected to `" + DATABASE_NAME + "`!");
     });
 });
 
 app.post("/login", async (request, response) => {
     const user = await userDb.findOne({ email: request.body.email})
-    if (user == null) return response.status(400).send("Cannot find user")
+    if (user == null) return response.status(400).send({status: "Fail", message: "Cannot find user", data: null})
 
     try {
         if (await bcrypt.compare(request.body.password, user.password)){ // Authenication pass 
@@ -55,8 +60,8 @@ app.post("/login", async (request, response) => {
 
 app.get("/user/:email", async (req, res)=>{
     const user = await userDb.findOne({ email: req.params.email})
-    if (user == null){
-        res.status(400).send("Cannot find user")
+    if (user === null){
+        res.status(400).send("Cannot find user!")
     } else{
         res.status(200).send(user)
     }
@@ -64,7 +69,6 @@ app.get("/user/:email", async (req, res)=>{
 
 app.post("/admin/user", authenticateToken, async (request, response) => {
     const existingUser = await userDb.findOne({ email: request.body.email})
-    console.log(existingUser)
     if(existingUser) return response.status(400).send({message: "User already exist"})
 
     const salt =  await bcrypt.genSalt()
@@ -133,8 +137,42 @@ app.patch("/teacher/:email/removeStudent", async (request, response) => {
 
 
 app.get("/teacher/classHistory/:email", async (request, response) => {
+
     await classHistoryDb.find({ teacher: request.params.email}).toArray(function(error, documents) {
         if (error) throw error;
         response.send(documents);
     });
+})
+
+
+
+
+// Class 
+
+// get all classes belongs to a teacher
+app.get("/teacher/class/:email", async (request, response) => {
+    await classDb.find({ teacherEmail: request.params.email}).toArray(function(error, documents) {
+        if (error) throw error;
+        response.send(documents);
+    });
+})
+
+// Add a class to the database 
+app.post("/teacher/class", async (request, response) => {
+    classDb.insertOne(request.body, (error, result) => {
+        if(error) {
+            return response.status(500).send(error);
+        }
+        response.status(200).send(result);
+    });
+});
+
+// delete a class from the database
+app.delete("/teacher/class/:classId", async (request, response) => {
+    var uid = request.params.classId
+    console.log(request.params.classId)
+    classDb.findOneAndDelete({'_id': ObjectId(uid)}, (err, result) => {
+        if (err) return response.send(500, err);
+        response.send(result);
+     }); 
 })

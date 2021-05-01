@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { createUser } from '../../actions/admin';
 import { Teacher, Student, UserType} from '../../interface/models'
 
-const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT} ) => {
+const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT, closeModal: () => void} ) => {
     const dispatch = useDispatch()
     const [form, setForm] = useState<Teacher|Student>({ firstName:"", lastName: "", email:"", password:"", userType: props.userType})
     const [confirmedPassword, setConfirmedPassword] = useState("")
@@ -79,7 +79,10 @@ const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT} ) => {
 
                 <Button
                     className="btn-lg btn-dark btn-block"
-                    onClick={handleSubmit}
+                    onClick={() => {
+                        handleSubmit()
+                        props.closeModal()
+                    }}
                 >
                     Create {props.userType.charAt(0).toUpperCase() + props.userType.slice(1)}
                 </Button>

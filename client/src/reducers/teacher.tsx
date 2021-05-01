@@ -1,28 +1,26 @@
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { TeacherReducerState } from '../interface/models'
 
-export const teacherFetchStudent = createAction('TEACHER_FETCH_STUDENTS')
-export const teacherAddStudent = createAction('TEACHER_ADD_STUDENT')
-export const teacherDeleteStudent = createAction<string>('TEACHER_DELETE_STUDENT')
+export const teacherFetchClasses = createAction('TEACHER_FETCH_CLASSES')
+export const teacherAddClass = createAction('TEACHER_ADD_CLASS')
+export const teacherDeleteClass = createAction('TEACHER_DELETE_CLASS')
 
-type DeleteStudentAction = ReturnType<typeof teacherDeleteStudent>
 
 const initalState = {
-    studentList: []
+    classList: {}
 }
 
 
 const teacherReducer = createReducer(initalState, {
-    [teacherFetchStudent.type]: (state: TeacherReducerState, { payload }) => {
-        console.log(payload)
-        state.studentList = payload
+    [teacherFetchClasses.type]: (state: TeacherReducerState, { payload }) => {
+        state.classList = payload
     },
-    [teacherAddStudent.type]: (state: TeacherReducerState, { payload }) => {
-        state.studentList.push(payload)
+    [teacherAddClass.type]: (state: TeacherReducerState, { payload }) => {
+        state.classList[payload._id] = payload
     },
-    [teacherDeleteStudent.type]: (state: TeacherReducerState, { payload }: DeleteStudentAction) => {
-        const index = state.studentList.findIndex(email => email === payload)
-        if (index !== -1) state.studentList.splice(index, 1)
+    [teacherDeleteClass.type]: (state: TeacherReducerState, { payload }) => {
+        console.log("payload", payload)
+        delete state.classList[payload]
     }
 })  
 

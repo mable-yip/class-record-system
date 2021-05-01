@@ -13,8 +13,8 @@ const TeacherHomePage = () => {
             <NavbarComponent />
             <Row>
                 <Col md={{ span: 5, offset: 5 }}>
-                    <Link to="/teacher/manageStudent">
-                        <h2> Manage Students </h2>
+                    <Link to="/teacher/manageClass">
+                        <h2> Manage Class </h2>
                     </Link>
                 </Col>
             </Row>

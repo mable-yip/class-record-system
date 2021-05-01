@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Button, FormControl, InputGroup } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { getUser } from "../../actions/common/user"
-import { teacherAddStudent } from "../../actions/teacher"
+//import { teacherAddStudent } from "../../actions/teacher"
 
 
 
@@ -29,7 +29,7 @@ const SearchStudent = () => {
                     <h5> First Name: {searchResult.firstName}</h5> 
                     <h5> Last Name: {searchResult.lastName}</h5> 
                     <h5> Email: {searchResult.email}</h5> 
-                    <Button onClick={()=> dispatch(teacherAddStudent(searchResult.email, email))}> Add </Button>
+                    {/* <Button onClick={()=> dispatch(teacherAddStudent(searchResult.email, email))}> Add </Button> */}
                 </div>
             )
         } 

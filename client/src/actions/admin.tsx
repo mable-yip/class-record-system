@@ -20,7 +20,9 @@ export const createUser = (user: Teacher| Student) => async(dispatch: (arg0: { t
             })
         }
     } catch(error){
-        alert(error.message)
+        if (error.response){
+            alert(error.response.data)
+        }
     }
 }
 

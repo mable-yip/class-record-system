@@ -35,7 +35,9 @@ export const login = (signinInfo:SigninInfo, router: History<unknown>) =>
             }
         } 
     } catch(error){
-        alert(error.message)
+        if (error.response){
+            alert(error.response.data)
+        }
     }
 }
 
