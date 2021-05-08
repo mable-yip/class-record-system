@@ -15,8 +15,8 @@ const App = () =>{
         <Route exact path="/admin"> < AdminHomePage/></Route>
         <Route exact path="/teacher"> <TeacherHomePage /></Route>
         <Route exact path="/student"> <StudentHomePage /></Route>
-        <Route exact path="/teacher/manageClass"> <TeacherManagerClass /></Route>
-        <Route exact path="/teacher/classHistory"> <ClassHistory /></Route>
+        <Route exact path="/teacher/class"> <TeacherManagerClass /></Route>
+        <Route exact path="/teacher/classhistory"> <ClassHistory /></Route>
         <Redirect to="/login" />
       </Switch> 
     </div>

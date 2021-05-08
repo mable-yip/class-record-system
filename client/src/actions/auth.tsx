@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { AUTH_SIGN_IN } from './types'
+import { AUTH_SIGN_IN, AUTH_SIGN_IN_ERROR } from './types'
 import { UserType } from '../interface/models'
 import { History } from 'history'
 
@@ -8,9 +8,7 @@ interface SigninInfo{
     password: string
 }
 
-export const login = (signinInfo:SigninInfo, router: History<unknown>) => 
-    async(dispatch: (arg0: { type: string; payload: { accessToken: string | null; email: string; userType: string } }) 
-    => void) => {
+export const login = async(signinInfo:SigninInfo) => {
     try{
         const { data } = await api.authenicate(signinInfo)
 
@@ -21,22 +19,15 @@ export const login = (signinInfo:SigninInfo, router: History<unknown>) =>
                 userType: data.userType
             }
 
-            dispatch({
+            return {
                 type: AUTH_SIGN_IN,
                 payload: authData
-            })
-
-            if(data.userType === UserType.ADMIN){
-                router.push('/admin')
-            } else if (data.userType === UserType.STUDENT){
-                router.push('/student')
-            } else if (data.userType === UserType.TEACHER){
-                router.push('/teacher')
             }
         } 
     } catch(error){
-        if (error.response){
-            alert(error.response.data)
+        return {
+            type: AUTH_SIGN_IN_ERROR,
+            payload: error.message
         }
     }
 }

@@ -21,9 +21,18 @@ const AdminHomePage = () => {
     const handleCloseCreateStudent = () => setShowCreatetudent(false)
 
     useEffect(() => {
-        dispatch(getAllTeachers())
-        dispatch(getAllStudents())
-    }, [dispatch])
+        const getStudentList = async() => {
+            let getStudentAction = await getAllStudents()
+            dispatch(getStudentAction)
+        }
+        const getTeacherList = async() => {
+            let getTeacherAction = await getAllTeachers()
+            dispatch(getTeacherAction)
+        }
+        getStudentList()
+        getTeacherList()
+
+    }, [])
 
     return (
         <div>
@@ -69,11 +78,6 @@ const AdminHomePage = () => {
                 <Modal.Body>
                     <InputUserForm userType={UserType.TEACHER} closeModal={handleCloseCreateTeacher}/>
                 </Modal.Body>
-                {/* <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close Button
-                        </Button>
-                </Modal.Footer> */}
             </Modal>
 
             
@@ -86,11 +90,6 @@ const AdminHomePage = () => {
                 <Modal.Body>
                     <InputUserForm userType={UserType.STUDENT} closeModal={handleCloseCreateStudent}/>
                 </Modal.Body>
-                {/* <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close Button
-                        </Button>
-                </Modal.Footer> */}
             </Modal>
         </div>
 

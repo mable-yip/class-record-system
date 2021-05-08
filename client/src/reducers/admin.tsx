@@ -38,4 +38,3 @@ const adminReducer = createReducer(initalState, {
 })  
 
 export default adminReducer
-  

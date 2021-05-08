@@ -7,9 +7,16 @@ export const getClassList = (email: string) => async (dispatch: (arg0: { type: s
     try{
         const { data } =  await api.getClassList(email)
 
+        //convert array to object 
+        const dataObj = data.reduce((obj: any, item: { [x: string]: any }) => {
+            return {
+                ...obj, [item['_id']]: item,
+            }
+        }, {})
+
         dispatch({
             type: TEACHER_FETCH_CLASSES,
-            payload: data
+            payload: dataObj
         })
     } catch(error){
         alert(error.message)

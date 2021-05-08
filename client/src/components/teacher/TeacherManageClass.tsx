@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 import InputClassForm from "./InputClassForm"
 import NavbarComponent from "../common/NavBarComponent"
-import { getClassList, deleteClass } from "../../actions/teacher"
+import { getClassList } from "../../actions/teacher"
 import DisplayTable from "./DisplayTable"
 import { RootState } from '../..'
 
@@ -12,7 +12,7 @@ const TeacherManagerStudent = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const [showCreateClass, setShowCreateClass] = useState(false)
-    const {classList} = useSelector((state) => state.teacher)
+    const {classList} = useSelector((state: RootState) => state.teacher)
     const loaclStorage = localStorage.getItem('profile')
     const initalState = loaclStorage ? loaclStorage: ""
     const [{ email }, setAuthData] = useState(JSON.parse(initalState))
@@ -20,7 +20,9 @@ const TeacherManagerStudent = () => {
     useEffect(() => {
         console.log("useEffect")
         dispatch(getClassList(email))
-    }, [dispatch])
+    }, [])
+
+    console.log("classList", classList)
     
     return(
         <div>
@@ -46,14 +48,7 @@ const TeacherManagerStudent = () => {
                 <Modal.Body>
                     <InputClassForm teacherEmail={email} closeModal={()=>setShowCreateClass(false)}/>
                 </Modal.Body>
-                {/* <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close Button
-                        </Button>
-                </Modal.Footer> */}
             </Modal>
-
-
         </div>
     )
 }

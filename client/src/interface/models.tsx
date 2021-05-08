@@ -66,3 +66,14 @@ export interface TeacherReducerState {
         [classId: string]: ClassModel
     }
 }
+
+export interface AuthData {
+    accessToken: string,
+    email: string,
+    userType: string
+}
+
+export interface AuthReducerState {
+    authData: AuthData | null,
+    error: string | null
+}

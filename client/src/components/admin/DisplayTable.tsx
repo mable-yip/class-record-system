@@ -1,6 +1,6 @@
 import React from "react"
 import { Button, Table } from "react-bootstrap"
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deleteUser } from "../../actions/admin";
 import { UserType, Teacher, Student} from '../../interface/models'
 
@@ -15,7 +15,10 @@ interface Props {
 const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
     const listArray  = Object.values(props.list)
-
+    const handleDeleteUser = async(email: string, userType: string) => {
+        let action = await deleteUser(email, userType)
+        dispatch(action)
+    }
     return (
         <Table striped bordered hover>
             <thead>
@@ -34,7 +37,9 @@ const DisplayTable = (props: Props) => {
                             <td> {user.firstName} </td>
                             <td> {user.lastName} </td>
                             <td> 
-                                <Button className="btn btn-outline-danger" onClick={()=>dispatch(deleteUser(user.email, props.userType))}>
+                                <Button 
+                                    className="btn btn-outline-danger" 
+                                    onClick={() => handleDeleteUser(user.email, user.userType)}>
                                         Delete 
                                 </Button>                             
                             </td>

@@ -14,11 +14,12 @@ const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT, closeM
         setForm({...form, [key]: newValue})
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         if (form.password !== confirmedPassword){
             alert("Passwords does not match!")
         } else{
-            dispatch(createUser(form))
+            let action = await createUser(form)
+            dispatch(action)
             setForm({ firstName:"", lastName: "", email:"", password:"", userType: props.userType})
             setConfirmedPassword("")
         }

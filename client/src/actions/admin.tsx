@@ -1,45 +1,52 @@
 import * as api from '../api'
-import { ADMIN_ADD_TEACHER, ADMIN_ADD_STUDENT, ADMIN_DELETE_TEACHER, ADMIN_DELETE_STUDENT, ADMIN_FETCH_TEACHERS, ADMIN_FETCH_STUDENTS } from './types'
+import { 
+    ADMIN_ADD_TEACHER, 
+    ADMIN_ADD_STUDENT, 
+    ADMIN_DELETE_TEACHER, 
+    ADMIN_DELETE_STUDENT, 
+    ADMIN_FETCH_TEACHERS, 
+    ADMIN_FETCH_STUDENTS 
+} from './types'
 import { UserType, Teacher, Student } from '../interface/models'
 
-
-export const createUser = (user: Teacher| Student) => async(dispatch: (arg0: { type: string; payload: any }) => void) => {
+export const createUser = async(user: Teacher| Student) => {
     try{
         const userType = user.userType
         const result = await api.createUser(user)
 
         if (userType === UserType.TEACHER){
-            dispatch({
+            return {
                 type: ADMIN_ADD_TEACHER,
                 payload: JSON.parse(result.config.data)
-            })
+            }
         } else if (userType === UserType.STUDENT){
-            dispatch({
+            return{
                 type: ADMIN_ADD_STUDENT,
                 payload: JSON.parse(result.config.data)
-            })
+            }
         }
     } catch(error){
-        if (error.response){
-            alert(error.response.data)
+        return{
+            type: ADMIN_ADD_STUDENT,
+            payload: error.message
         }
     }
 }
 
-export const deleteUser = (email: string, userType: string) => async(dispatch: (arg0: { type: string; payload: string }) => void) => {
+export const deleteUser = async(email: string, userType: string) => {
     try{
         await api.deleteUser(email)
 
         if (userType === UserType.TEACHER){
-            dispatch({
+            return {
                 type: ADMIN_DELETE_TEACHER,
                 payload: email
-            })
+            }
         } else if (userType === UserType.STUDENT){
-            dispatch({
+            return {
                 type: ADMIN_DELETE_STUDENT,
                 payload: email
-            })
+            }
         }
     } catch (error){
         alert(error.message)
@@ -47,7 +54,7 @@ export const deleteUser = (email: string, userType: string) => async(dispatch: (
 }
 
 
-export const getAllTeachers = () => async(dispatch: (arg0: { type: string; payload: any }) => void) => {
+export const getAllTeachers = async () => {
     try{
         const { data } = await api.getAllTeachers()
 
@@ -58,17 +65,17 @@ export const getAllTeachers = () => async(dispatch: (arg0: { type: string; paylo
             }
         }, {})
 
-        dispatch({
+        return {
             type: ADMIN_FETCH_TEACHERS,
             payload: dataObj
-        })
+        }
 
     } catch(error){
         alert(error.message)
     }
 }
 
-export const getAllStudents = () => async(dispatch: (arg0: { type: string; payload: any }) => void) => {
+export const getAllStudents = async() => {
     try{
         const { data } = await api.getAllStudents()
 
@@ -79,10 +86,10 @@ export const getAllStudents = () => async(dispatch: (arg0: { type: string; paylo
             }
         }, {})
 
-        dispatch({
+        return {
             type: ADMIN_FETCH_STUDENTS,
             payload: dataObj
-        })
+        }
 
     } catch(error){
         alert(error.message)

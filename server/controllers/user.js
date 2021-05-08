@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const secret = "jwtSecret"
 
-export const signin = async (req, res) => {
+export const login = async (req, res) => {
     const { email, password } = req.body
     try{
 
