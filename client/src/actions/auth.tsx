@@ -1,7 +1,5 @@
 import * as api from '../api'
-import { AUTH_SIGN_IN, AUTH_SIGN_IN_ERROR } from './types'
-import { UserType } from '../interface/models'
-import { History } from 'history'
+import { AUTH_SIGN_IN, AUTH_SIGN_IN_FAIL } from './types'
 
 interface SigninInfo{
     email:string, 
@@ -26,7 +24,7 @@ export const login = async(signinInfo:SigninInfo) => {
         } 
     } catch(error){
         return {
-            type: AUTH_SIGN_IN_ERROR,
+            type: AUTH_SIGN_IN_FAIL,
             payload: error.message
         }
     }

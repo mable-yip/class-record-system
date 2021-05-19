@@ -24,7 +24,9 @@ const adminReducer = createReducer(initalState, {
         state.studentList = payload
     },
     [adminAddTeacher.type]: (state: AdminReducerState, { payload }) => {
+        console.log(payload)
         state.teacherList[payload.email] = payload
+        console.log(state.teacherList)
     },
     [adminAddStudent.type]: (state: AdminReducerState, { payload }) => {
         state.studentList[payload.email] = payload

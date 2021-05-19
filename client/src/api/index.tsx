@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Teacher, Student, ClassModelPreview } from '../interface/models'
-const url = 'http://localhost:5001';
+const url = 'http://localhost:5000';
 
-const API = axios.create({ baseURL: 'http://localhost:5001' });
+const API = axios.create({ baseURL: 'http://localhost:5000' });
 
 API.interceptors.request.use((req) => {
     const storage = localStorage.getItem('profile')
