@@ -2,7 +2,7 @@ import { createAction, createReducer } from '@reduxjs/toolkit'
 import { AuthReducerState } from '../interface/models'
 
 export const LOGIN_SUCCESS = createAction('LOGIN_SUCCESS')
-export const LOGIN_FAILURE = createAction('LOGIN_FAILURE')
+export const LOGIN_FAILED = createAction('LOGIN_FAILED')
 export const LOGOUT = createAction('LOGOUT')
 
 const initalState : AuthReducerState = {
@@ -15,7 +15,7 @@ const authReducer = createReducer(initalState, {
         console.log(payload)
         state.authData = payload
     },
-    [LOGIN_FAILURE.type]: (state: AuthReducerState, { payload }) => {
+    [LOGIN_FAILED.type]: (state: AuthReducerState, { payload }) => {
         state.error = payload
     },
     [LOGOUT.type]: (state: AuthReducerState) => {

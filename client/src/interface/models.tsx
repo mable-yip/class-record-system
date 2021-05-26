@@ -29,6 +29,10 @@ export interface Student {
 }
 
 export interface AdminReducerState {
+    loadingTeachers: boolean,
+    loadingStudents: boolean,
+    errorTeachers: null | string,
+    errorStudents: null | string,
     teacherList: {
         [email: string]: Teacher
     }

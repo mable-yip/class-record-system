@@ -15,9 +15,9 @@ API.interceptors.request.use((req) => {
 });
 
 export const FetchMiddleware = (store) => (next) => (action) => {
-    if (action.type.substr(action.type.length - 7) === "REQUEST"){
+    // if (action.type.substr(action.type.length - 7) === "REQUEST"){
       
-    }
+    // }
   
     console.log("FetchMiddleware: action type = ", action.type)
   
@@ -28,7 +28,10 @@ export const FetchMiddleware = (store) => (next) => (action) => {
           type: "LOGIN_SUCCESS",
           payload: response.data
         })
-      }).catch((error)=> console.log(error.response))
+      }).catch((error)=> store.dispatch({
+        type: "LOGIN_FAILED",
+        payload: error
+      }))
     } else if (action.type === "FETCH_TEACHERS_REQUEST"){
       API.get(`${url}/${action.payload.path}`).then((response)=>{
         console.log(response.data)
@@ -36,7 +39,10 @@ export const FetchMiddleware = (store) => (next) => (action) => {
           type: "FETCH_TEACHERS_SUCCESS",
           payload: response.data
         })
-      }).catch((error)=> console.log(error.response))
+      }).catch((error)=> store.dispatch({
+        type: "FETCH_TEACHERS_FAILED",
+        payload: error
+      }))
     }else if (action.type === "FETCH_STUDENTS_REQUEST"){
       API.get(`${url}/${action.payload.path}`).then((response)=>{
         console.log(response.data)
@@ -44,7 +50,10 @@ export const FetchMiddleware = (store) => (next) => (action) => {
           type: "FETCH_STUDENTS_SUCCESS",
           payload: response.data
         })
-      }).catch((error)=> console.log(error.response))
+      }).catch((error)=> store.dispatch({
+        type: "FETCH_STUDENTS_FAILED",
+        payload: error
+      }))
     }
     return next(action)
   }
