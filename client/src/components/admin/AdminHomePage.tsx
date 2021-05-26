@@ -6,10 +6,6 @@ import { useEffect, useState } from 'react';
 import DisplayTable from './DisplayTable';
 import InputUserForm from './InputUserForm';
 import { RootState } from '../..';
-import { getAllStudents, getAllTeachers } from "../../actions/admin";
-import  useFetchHook  from '../hooks/useFetchHook';
-import * as api from '../../api'
-import { ADMIN_FETCH_STUDENTS, ADMIN_FETCH_TEACHERS } from '../../actions/types';
 
 const AdminHomePage = () => {
     const dispatch = useDispatch()
@@ -17,8 +13,7 @@ const AdminHomePage = () => {
     const [showCreateStudent, setShowCreatetudent] = useState(false)
     const { teacherList, studentList } = useSelector((state: RootState) => state.admin)
 
-    console.log("teacherList", teacherList)
-    console.log("studentList", studentList)
+    console.log(teacherList, studentList)
 
     const handleShowCreateTeacher = () => setShowCreateTeacher(true)
     const handleCloseCreateTeacher = () => setShowCreateTeacher(false)
@@ -26,29 +21,24 @@ const AdminHomePage = () => {
     const handleShowCreateStudent = () => setShowCreatetudent(true)
     const handleCloseCreateStudent = () => setShowCreatetudent(false)
 
-    const { result: allStudents , error: errorStudent, isLoading: isLoadingStudents} = useFetchHook(api.getAllStudents())
-    dispatch({
-        type: ADMIN_FETCH_STUDENTS,
-        payload: allStudents
-    })
-    const { result: allTeachers, error: errorTeacher, isLoading: isLoadingTeachers } = useFetchHook(api.getAllTeachers())
-    dispatch({
-        type: ADMIN_FETCH_TEACHERS,
-        payload: allTeachers
-    })
 
-    // useEffect(() => {
-    //     const getStudentList = async() => {
-    //         let getStudentAction = await getAllStudents()
-    //         dispatch(getStudentAction)
-    //     }
-    //     const getTeacherList = async() => {
-    //         let getTeacherAction = await getAllTeachers()
-    //         dispatch(getTeacherAction)
-    //     }
-    //     getStudentList()
-    //     getTeacherList()
-    // }, [])
+    useEffect(() => {
+        console.log("called_dispatch")
+        dispatch({
+            type: "FETCH_TEACHERS_REQUEST",
+            payload: {
+                method: "GET",
+                path: "admin/allTeachers"
+            }
+        })
+        dispatch({
+            type: "FETCH_STUDENTS_REQUEST",
+            payload: {
+                method: "GET",
+                path: "admin/allStudents"
+            }
+        })
+    }, [])
 
     return (
         <div>
@@ -66,7 +56,7 @@ const AdminHomePage = () => {
                                 </div>
                             </div>
                         </div>
-                        <DisplayTable list={teacherList} userType={UserType.TEACHER} isLoading={isLoadingTeachers} error={errorTeacher}/>
+                        <DisplayTable list={teacherList} userType={UserType.TEACHER}/>
                     </Col>
                     <Col>
                         <div className="mt-3">
@@ -79,7 +69,7 @@ const AdminHomePage = () => {
                                 </div>
                             </div>
                         </div>
-                        <DisplayTable list={studentList} userType={UserType.STUDENT} isLoading={isLoadingStudents} error={errorStudent}/>
+                        <DisplayTable list={studentList} userType={UserType.STUDENT}/>
                     </Col>
                 </Row>
             </Container>

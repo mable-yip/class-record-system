@@ -1,8 +1,8 @@
 import './mongoDb.js'
 import express from 'express'
 import cors from 'cors'
-import usersRouter from './routes/user.js'
-import classRouter from './routes/class.js'
+import usersRouter from './controller/user.js'
+import classRouter from './controller/class.js'
 
 const app = express();
 app.use(express.json({ limit: '30mb', extended: true }));

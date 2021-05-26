@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Form, FormGroup } from 'react-bootstrap';
 import './LoginPage.css'
 import { login } from '../../actions/auth'
 import { useHistory } from 'react-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { UserType } from '../../interface/models';
+import { RootState } from '../..';
 
 const LoginPage = () => {
     const [signinInfo, setSigninInfo] = useState({ email:"", password:""})
+    const { authData } = useSelector((state: RootState) => state.auth)
     const history = useHistory()
     const dispatch = useDispatch()
 
@@ -16,19 +18,28 @@ const LoginPage = () => {
         setSigninInfo({...signinInfo, [key]: newValue})
     }
 
-    const handleLogin = async() => {
-        let action = await login(signinInfo)
-        dispatch(action)
-
-        if (action){    
-            if(action.payload.userType === UserType.ADMIN){
+    useEffect(()=>{
+        if(authData){
+            if(authData.userType === UserType.ADMIN){
                 history.push('/admin')
-            } else if (action.payload.userType === UserType.STUDENT){
+            } else if (authData.userType === UserType.STUDENT){
                 history.push('/student')
-            } else if (action.payload.userType === UserType.TEACHER){
+            } else if (authData.userType === UserType.TEACHER){
                 history.push('/teacher')
             }
         }
+    }, [authData])
+
+    const handleLogin = async() => {
+        dispatch({
+            type: "LOGIN_REQUEST",
+            payload: {
+                method: "POST",
+                path: "login",
+                body: signinInfo
+            }
+        })
+        console.log(authData)
     }
 
     return (

@@ -1,26 +1,25 @@
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { AuthReducerState } from '../interface/models'
 
-export const authSignIn = createAction('AUTH_SIGN_IN')
-export const authSignOut = createAction('AUTH_SIGN_OUT')
-export const authError = createAction('AUTH_Error')
+export const LOGIN_SUCCESS = createAction('LOGIN_SUCCESS')
+export const LOGIN_FAILURE = createAction('LOGIN_FAILURE')
+export const LOGOUT = createAction('LOGOUT')
 
-const initalState = {
+const initalState : AuthReducerState = {
     authData: null,
     error: null
 }
 
 const authReducer = createReducer(initalState, {
-    [authSignIn.type]: (state: AuthReducerState, { payload }) => {
-        localStorage.setItem('profile', JSON.stringify(payload))
+    [LOGIN_SUCCESS.type]: (state: AuthReducerState, { payload }) => {
+        console.log(payload)
         state.authData = payload
     },
-    [authSignOut.type]: (state: AuthReducerState) => {
-        localStorage.clear()
-        state = initalState
-    },
-    [authError.type]: (state: AuthReducerState, { payload }) => {
+    [LOGIN_FAILURE.type]: (state: AuthReducerState, { payload }) => {
         state.error = payload
+    },
+    [LOGOUT.type]: (state: AuthReducerState) => {
+        state = initalState
     }
 })
 

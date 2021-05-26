@@ -8,26 +8,19 @@ interface Props {
     list: { 
         [email: string]: Teacher | Student 
     }, 
-    userType: UserType.STUDENT | UserType.TEACHER,
-    isLoading: Boolean,
-    error: string
+    userType: UserType.STUDENT | UserType.TEACHER
 }
 
 
 const DisplayTable = (props: Props) => {
+    console.log(props)
     const dispatch = useDispatch()
     const handleDeleteUser = async(email: string, userType: string) => {
         let action = await deleteUser(email, userType)
         dispatch(action)
     }
 
-    console.log(props.isLoading)
-
     return (
-        props.error? 
-        <Alert variant="danger">
-            {props.error}
-        </Alert> :
         <Table striped bordered hover>
             <thead>
                 <tr>
@@ -39,7 +32,6 @@ const DisplayTable = (props: Props) => {
             </thead>
             <tbody>
                 {
-                    props.isLoading ? <h2> Loading...</h2> :  
                         Object.values(props.list).map((user) => 
                             <tr key={user.email}>
                                 <td> {user.email} </td>

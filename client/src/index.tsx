@@ -3,10 +3,14 @@ import App from './components/App';
 import {BrowserRouter as Router} from 'react-router-dom'
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { reducers } from './reducers';
 
-const store = createStore(reducers, compose(applyMiddleware(thunk)));
+import { FetchMiddleware } from './middleware/FetchMiddleware'
+import { StoreMiddleware } from './middleware/StoreMiddleware'
+
+
+const store = createStore(reducers, applyMiddleware(FetchMiddleware, StoreMiddleware));
+//const store = createStore(reducers, applyMiddleware(FetchMiddleware, StoreMiddleware));
 export type RootState = ReturnType<typeof store.getState>
 
 ReactDOM.render(

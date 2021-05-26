@@ -1,8 +1,8 @@
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { AdminReducerState } from '../interface/models'
 
-export const adminFetchTeachers = createAction('ADMIN_FETCH_TEACHERS')
-export const adminFetchStudents = createAction('ADMIN_FETCH_STUDENTS')
+export const FETCH_TEACHERS_SUCCESS = createAction('FETCH_TEACHERS_SUCCESS')
+export const FETCH_STUDENTS_SUCCESS = createAction('FETCH_STUDENTS_SUCCESS')
 export const adminAddTeacher = createAction('ADMIN_ADD_TEACHER')
 export const adminAddStudent = createAction('ADMIN_ADD_STUDENT')
 export const adminDeleteTeacher = createAction<string>('ADMIN_DELETE_TEACHER')
@@ -17,12 +17,17 @@ const initalState = {
 }
 
 const adminReducer = createReducer(initalState, {
-    [adminFetchTeachers.type]: (state: AdminReducerState, { payload }) => {
+    [FETCH_TEACHERS_SUCCESS.type]: (state: AdminReducerState, { payload }) => {
         state.teacherList = payload
     },
-    [adminFetchStudents.type]: (state: AdminReducerState, { payload }) => {
+    [FETCH_STUDENTS_SUCCESS.type]: (state: AdminReducerState, { payload }) => {
         state.studentList = payload
     },
+
+
+
+
+    
     [adminAddTeacher.type]: (state: AdminReducerState, { payload }) => {
         console.log(payload)
         state.teacherList[payload.email] = payload

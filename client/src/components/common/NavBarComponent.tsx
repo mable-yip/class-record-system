@@ -5,31 +5,32 @@ import { useHistory, useLocation } from "react-router-dom";
 import { AUTH_SIGN_OUT } from "../../actions/types";
 
 const NavbarComponent = () => {
-    const loaclStorage = localStorage.getItem('profile')
-    const initalState = loaclStorage ? loaclStorage: ""
-    const location = useLocation()
+    // const loaclStorage = localStorage.getItem('profile')
+    // const initalState = loaclStorage ? loaclStorage: ""
+    // const location = useLocation()
 
-    const [{email, userType}, setUser] = useState(JSON.parse(initalState))
+    // console.log(initalState)
+
+    // const [{email, userType}, setUser] = useState(JSON.parse(initalState))
     const dispatch = useDispatch()
     const history = useHistory()
 
     const logout = () => {
-        dispatch({ type: AUTH_SIGN_OUT });
-    
+        dispatch({ type: "LOGOUT" });
         history.push('/login');
-        setUser(null);
+        //setUser(null);
     };
 
-    useEffect(() => {
-        const loaclStorage = localStorage.getItem('profile')
-        const initalState = loaclStorage ? loaclStorage: ""
-        setUser(JSON.parse(initalState));
-      }, [ location ])
+    // useEffect(() => {
+    //     const loaclStorage = localStorage.getItem('profile')
+    //     const initalState = loaclStorage ? loaclStorage: ""
+    //     setUser(JSON.parse(initalState));
+    //   }, [ location ])
     
     return (
         <Navbar bg="dark" variant="dark">
             <Navbar.Brand>
-                {userType.charAt(0).toUpperCase() + userType.slice(1)}: {email}
+                {/* {userType.charAt(0).toUpperCase() + userType.slice(1)}: {email} */}
             </Navbar.Brand>
 
             <Navbar.Brand className="ml-auto" onClick={logout}>
