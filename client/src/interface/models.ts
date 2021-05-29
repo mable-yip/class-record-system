@@ -38,7 +38,8 @@ export interface AdminReducerState {
     }
     studentList: {
         [email: string]: Student
-    }
+    },
+    error: null | string
 }
 
 export enum CycleType {
@@ -66,8 +67,10 @@ export interface ClassModel {
 export type ClassModelPreview = Omit<ClassModel, "_id"> 
 
 export interface TeacherReducerState {
+    loading: boolean,
+    error: null | string,
     classList: {
-        [classId: string]: ClassModel
+        [email: string]: ClassModel
     }
 }
 
@@ -79,5 +82,20 @@ export interface AuthData {
 
 export interface AuthReducerState {
     authData: AuthData | null,
-    error: string | null
+    error: string | null,
+    loading: boolean
 }
+
+export enum APIMethod {
+    GET = 'get',
+    POST = 'post',
+    PATCH = 'patch',
+    DELETE = 'delete'
+}
+
+export interface APIRequest {
+    path: string,
+    body: any,
+    method: APIMethod.GET | APIMethod.POST | APIMethod.PATCH | APIMethod.DELETE
+}
+

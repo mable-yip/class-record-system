@@ -1,7 +1,6 @@
 import NavbarComponent from '../common/NavBarComponent'
 import { useDispatch } from 'react-redux';
 import {useEffect, useState} from 'react'
-import { getUser } from '../../actions/common/user'
 import { Link } from 'react-router-dom';
 
 

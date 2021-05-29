@@ -1,10 +1,6 @@
 import React, { useState } from "react"
 import { Button, FormControl, InputGroup } from "react-bootstrap"
 import { useDispatch } from "react-redux"
-import { getUser } from "../../actions/common/user"
-//import { teacherAddStudent } from "../../actions/teacher"
-
-
 
 const SearchStudent = () => {
     const [ input, setInput] = useState("")
@@ -15,11 +11,7 @@ const SearchStudent = () => {
     const [{ email }, setAuthData] = useState(JSON.parse(initalState))
 
     const handleClick = async () => {
-        const student = await dispatch(getUser(input)) // why need to put dispatch here???????????????// no need to called the getUser function in api file directly 
-        if (student !== undefined){
-            setSearchResult(student)
-        }
-        setInput("")
+       console.log("seach")
     }
 
     const displayStudent = () => {

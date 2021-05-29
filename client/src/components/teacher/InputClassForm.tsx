@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import { Button, Form, FormGroup } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { createClass } from '../../actions/teacher';
-import { ClassModelPreview, CycleType } from '../../interface/models'
+import { APIMethod, ClassModelPreview, CycleType } from '../../interface/models'
+import { createClassRequest } from '../../reducers/actionCreators';
 
 const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) => {
     const dispatch = useDispatch()
@@ -19,7 +19,11 @@ const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) 
 
     const handleSubmit = () => {
         console.log("```", form)
-        dispatch(createClass(form))
+        dispatch(createClassRequest({
+            method: APIMethod.POST,
+            path: "teacher/class",
+            body: form
+        }))
         setForm({ className:"", teacherEmail: props.teacherEmail, studentsEmail:[], startDate:"", repeat: {
             cycle: "",
             startTime: "",
@@ -43,7 +47,7 @@ const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) 
                 <FormGroup>
                     <Form.Label>Start date</Form.Label>
                     <Form.Control 
-                        type="text" 
+                        type="date" 
                         placeholder="Start date" 
                         value={form.startDate}
                         onChange={handleOnChange("startDate")}
@@ -53,7 +57,7 @@ const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) 
                 <FormGroup>
                     <Form.Label>Start time</Form.Label>
                     <Form.Control 
-                        type="text" 
+                        type="time" 
                         placeholder="Start time" 
                         value={form.repeat.startTime}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>)=> setForm({...form, repeat: {...form.repeat, startTime: event.target.value}})}
@@ -63,7 +67,7 @@ const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) 
                 <FormGroup>
                     <Form.Label>End time</Form.Label>
                     <Form.Control 
-                        type="text" 
+                        type="time" 
                         placeholder="End time" 
                         value={form.repeat.endTime}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>)=> setForm({...form, repeat: {...form.repeat, endTime: event.target.value}})}

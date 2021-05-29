@@ -1,8 +1,9 @@
 import React, { useState } from "react"
 import { Button, Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux";
-import { ClassModel } from "../../interface/models";
-import { deleteClass } from "../../actions/teacher";
+import { APIMethod, ClassModel } from "../../interface/models";
+import { deleteClassRequest } from "../../reducers/actionCreators";
+import { Link } from 'react-router-dom'
 
 interface Props { 
     list: { 
@@ -14,6 +15,14 @@ interface Props {
 const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
     const listArray  = Object.values(props.list)
+
+    const handleDelete = (classId: string) => {
+        dispatch(deleteClassRequest({
+            method: APIMethod.DELETE,
+            path: `teacher/class/${classId}`,
+            body: null
+        }))
+    }
 
     return (
         <Table striped bordered hover>
@@ -28,10 +37,14 @@ const DisplayTable = (props: Props) => {
                 {
                     listArray.map(classObj => 
                         <tr key={classObj._id}>
-                            <td> {classObj.className} </td>
+                            <td> 
+                                <Link to={`/teacher/class/${classObj._id}`}>
+                                    {classObj.className}
+                                </Link> 
+                            </td>
                             <td> {classObj.startDate} </td>
                             <td> 
-                                <Button className="btn btn-outline-danger" onClick={() => dispatch(deleteClass(classObj._id))}>
+                                <Button className="btn btn-outline-danger" onClick={() => handleDelete(classObj._id)}>
                                         Delete 
                                 </Button>                             
                             </td>

@@ -1,11 +1,12 @@
 import NavbarComponent from '../common/NavBarComponent'
-import { UserType } from '../../interface/models'
+import { APIMethod, UserType } from '../../interface/models'
 import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import DisplayTable from './DisplayTable';
 import InputUserForm from './InputUserForm';
 import { RootState } from '../..';
+import { fetchStudentsRequest, fetchTeachersRequest } from '../../reducers/actionCreators';
 
 const AdminHomePage = () => {
     const dispatch = useDispatch()
@@ -24,21 +25,18 @@ const AdminHomePage = () => {
 
     useEffect(() => {
         console.log("called_dispatch")
-        dispatch({
-            type: "FETCH_TEACHERS_REQUEST",
-            payload: {
-                method: "GET",
-                path: "admin/allTeachers"
-            }
-        })
-        dispatch({
-            type: "FETCH_STUDENTS_REQUEST",
-            payload: {
-                method: "GET",
-                path: "admin/allStudents"
-            }
-        })
-    }, [])
+        dispatch(fetchTeachersRequest({
+            method: APIMethod.GET,
+            path: "admin/allTeachers",
+            body: null
+        }))
+
+        dispatch(fetchStudentsRequest({
+            method: APIMethod.GET,
+            path: "admin/allStudents",
+            body: null
+        }))
+    }, [dispatch])
 
     return (
         <div>

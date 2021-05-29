@@ -3,9 +3,9 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import AdminHomePage from './admin/AdminHomePage';
 import LoginPage from './login/LoginPage'
 import StudentHomePage from './student/StudentHomePage';
-import ClassHistory from './teacher/ClassHistory';
+import ClassDetail from './teacher/ClassDetail';
 import TeacherHomePage from './teacher/TeacherHomePage';
-import TeacherManagerClass from './teacher/TeacherManageClass';
+import TeacherManagerClass from './teacher/ManageClass';
 
 const App = () =>{
   return (
@@ -16,7 +16,7 @@ const App = () =>{
         <Route exact path="/teacher"> <TeacherHomePage /></Route>
         <Route exact path="/student"> <StudentHomePage /></Route>
         <Route exact path="/teacher/class"> <TeacherManagerClass /></Route>
-        <Route exact path="/teacher/classhistory"> <ClassHistory /></Route>
+        <Route exact path="/teacher/class/:class_id"> <ClassDetail /></Route>
         <Redirect to="/login" />
       </Switch> 
     </div>

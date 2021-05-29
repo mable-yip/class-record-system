@@ -12,8 +12,7 @@ const usersRouter = express.Router();
  */
 usersRouter.post("/login", async (request, response) => {
     const user = await getCollection('user').findOne({ email: request.body.email})
-    console.log(user)
-    if (user == null) return response.status(400).send({status: "Fail", message: "Cannot find user", data: null})
+    if (user == null) return response.status(400).send("Cannot find user")
 
     try {
         if (await bcrypt.compare(request.body.password, user.password)){ // Authenication pass 
@@ -23,7 +22,7 @@ usersRouter.post("/login", async (request, response) => {
             // })  
             response.status(200).send({auth: true, accessToken: token, userType: user.userType, email: user.email});
         } else{
-            response.status(401).send({auth: false, message: "Wrong username/password"});
+            response.status(401).send("Wrong username/password");
         }
     } catch (error){
         response.status(400).send(error.message)
@@ -34,7 +33,7 @@ usersRouter.post("/login", async (request, response) => {
 usersRouter.get("/user/:email", async (req, res)=>{
     const user = await getCollection('user').findOne({ email: req.params.email})
     if (user === null){
-        res.status(400).send("Cannot find user!")
+        res.status(400).send("Cannot find user")
     } else{
         res.status(200).send(user)
     }
@@ -44,19 +43,20 @@ usersRouter.get("/user/:email", async (req, res)=>{
  * Handles a POST request to create a user
  */
 usersRouter.post("/admin/user", authenticateToken, async (request, response) => {
+
     const existingUser = await getCollection('user').findOne({ email: request.body.email})
-    if(existingUser) return response.status(400).send({message: "User already exist"})
+    if(existingUser) return response.status(400).send("User already exist")
 
-    const salt =  await bcrypt.genSalt()
-    const hashedPassword =  await bcrypt.hash(request.body.password, salt)
+    try{
+        const salt =  await bcrypt.genSalt()
+        const hashedPassword =  await bcrypt.hash(request.body.password, salt)
+        const result = await getCollection('user').insertOne({...request.body, password: hashedPassword})
+        response.status(200).send(result.ops[0])
 
-    getCollection('user').insertOne({...request.body, password: hashedPassword}, (error, result) => {
-        if(error) {
-            return response.status(500).send(error);
-        }
-        response.status(200).send({message: "User had been created successfully"});// should have problem here
-    });
-});
+    } catch(error){
+        response.status(500).send(error)
+    }
+})
 
 
 /**
@@ -64,15 +64,11 @@ usersRouter.post("/admin/user", authenticateToken, async (request, response) => 
  */
 usersRouter.delete("/admin/user/:email", async (request, response) => {
     try {
-        // update teacher if studentList of the teacher contains the student to be deleted
-        await getCollection('user').updateMany(
-            { studentList: {$in:[request.params.email]}},
-            {$pull: { "studentList" : request.params.email}})
-
+        const user = await getCollection('user').findOne({ email: request.params.email})
         await getCollection('user').deleteOne({ "email" : request.params.email })
-        response.status(200).send({message: "User had been deleted successfully"})
-     } catch (e) {
-        response.status(400)//check code 
+        response.status(200).send(user)
+     } catch (error) {
+        response.status(500).send(error);
      }
 })
 
@@ -80,20 +76,25 @@ usersRouter.delete("/admin/user/:email", async (request, response) => {
  * Handle a GET request to get all the teachers in the database 
  */
 usersRouter.get("/admin/allTeachers", authenticateToken, async (request, response) => {
-    await getCollection('user').find({ userType: "teacher"}).toArray(function(error, documents) {
-        if (error) throw error;
-        response.send(documents);
-    });
+    try{
+        const result = await getCollection('user').find({ userType: "teacher"}).toArray()
+        response.status(200).send(result)
+    } catch(error){
+        response.status(500).send(error);
+    }
 })
 
 /**
  * Handle a GET request to get all the students in the database 
  */
 usersRouter.get("/admin/allStudents", authenticateToken, async (request, response) => {
-    await getCollection('user').find({ userType: "student"}).toArray(function(error, documents) {
-        if (error) throw error;
-        response.send(documents);
-    });
+
+    try{
+        const result = await getCollection('user').find({ userType: "student"}).toArray()
+        response.status(200).send(result)
+    } catch(error){
+        response.status(500).send(error)
+    }
 })
 
 export default usersRouter

@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import { Button, Form, FormGroup } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { createUser } from '../../actions/admin';
-import { Teacher, Student, UserType} from '../../interface/models'
+import { Teacher, Student, UserType, APIMethod} from '../../interface/models'
+import { createUserRequest } from '../../reducers/actionCreators';
 
 const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT, closeModal: () => void} ) => {
     const dispatch = useDispatch()
@@ -18,8 +18,11 @@ const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT, closeM
         if (form.password !== confirmedPassword){
             alert("Passwords does not match!")
         } else{
-            let action = await createUser(form)
-            dispatch(action)
+            dispatch(createUserRequest({
+                method: APIMethod.POST,
+                path: "admin/user",
+                body: form
+            }))
             setForm({ firstName:"", lastName: "", email:"", password:"", userType: props.userType})
             setConfirmedPassword("")
         }

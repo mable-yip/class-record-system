@@ -4,25 +4,27 @@ import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 import InputClassForm from "./InputClassForm"
 import NavbarComponent from "../common/NavBarComponent"
-import { getClassList } from "../../actions/teacher"
 import DisplayTable from "./DisplayTable"
 import { RootState } from '../..'
+import { APIMethod } from "../../interface/models"
+import { fetchClassesRequest } from "../../reducers/actionCreators"
 
-const TeacherManagerStudent = () => {
+const ManagerClass = () => {
+    const loaclStorage = localStorage.getItem('profile')
+    const {email} = JSON.parse( loaclStorage ? loaclStorage: "")
     const history = useHistory()
     const dispatch = useDispatch()
     const [showCreateClass, setShowCreateClass] = useState(false)
-    const {classList} = useSelector((state: RootState) => state.teacher)
-    const loaclStorage = localStorage.getItem('profile')
-    const initalState = loaclStorage ? loaclStorage: ""
-    const [{ email }, setAuthData] = useState(JSON.parse(initalState))
+    const { classList } = useSelector((state: RootState) => state.teacher)
 
     useEffect(() => {
-        console.log("useEffect")
-        dispatch(getClassList(email))
-    }, [])
+        dispatch(fetchClassesRequest({
+            method: APIMethod.GET,
+            path: `teacher/class/${email}`,
+            body: null
+        }))
 
-    console.log("classList", classList)
+    }, [dispatch])
     
     return(
         <div>
@@ -53,4 +55,4 @@ const TeacherManagerStudent = () => {
     )
 }
 
-export default TeacherManagerStudent
+export default ManagerClass

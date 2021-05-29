@@ -1,8 +1,8 @@
 import React from "react"
 import { Alert, Button, Table } from "react-bootstrap"
 import { useDispatch } from "react-redux";
-import { deleteUser } from "../../actions/admin";
-import { UserType, Teacher, Student} from '../../interface/models'
+import { UserType, Teacher, Student, APIMethod} from '../../interface/models'
+import { deleteUserRequest } from "../../reducers/actionCreators";
 
 interface Props { 
     list: { 
@@ -13,11 +13,13 @@ interface Props {
 
 
 const DisplayTable = (props: Props) => {
-    console.log(props)
     const dispatch = useDispatch()
-    const handleDeleteUser = async(email: string, userType: string) => {
-        let action = await deleteUser(email, userType)
-        dispatch(action)
+    const handleDeleteUser = (email: string) => {
+        dispatch(deleteUserRequest({
+            method: APIMethod.DELETE,
+            path: `admin/user/${email}`,
+            body: null
+        }))
     }
 
     return (
@@ -32,20 +34,20 @@ const DisplayTable = (props: Props) => {
             </thead>
             <tbody>
                 {
-                        Object.values(props.list).map((user) => 
-                            <tr key={user.email}>
-                                <td> {user.email} </td>
-                                <td> {user.firstName} </td>
-                                <td> {user.lastName} </td>
-                                <td> 
-                                    <Button 
-                                        className="btn btn-outline-danger" 
-                                        onClick={() => handleDeleteUser(user.email, user.userType)}>
-                                            Delete 
-                                    </Button>                             
-                                </td>
-                            </tr>                        
-                        )
+                    Object.values(props.list).map((user) => 
+                        <tr key={user.email}>
+                            <td> {user.email} </td>
+                            <td> {user.firstName} </td>
+                            <td> {user.lastName} </td>
+                            <td> 
+                                <Button 
+                                    className="btn btn-outline-danger" 
+                                    onClick={() => handleDeleteUser(user.email)}>
+                                        Delete 
+                                </Button>                             
+                            </td>
+                        </tr>                        
+                    )
                 }
             </tbody>
         </Table>
