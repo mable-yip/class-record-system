@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { AnyAction } from 'redux';
 
 const url = 'http://localhost:5000';
 
@@ -18,7 +19,7 @@ API.interceptors.request.use((req) => {
 });
 
 
-export const StoreMiddleware = (store) => (next) => (action) => {
+export const StoreMiddleware = (store: any) => (next: any) => (action: AnyAction) => {
     console.log("storeMiddleware: action type = ", action.type)
   
     if(action.type === "LOGIN_SUCCESS"){

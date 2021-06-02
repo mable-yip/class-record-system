@@ -3,7 +3,7 @@ import { Alert, Button, Form, FormGroup, Spinner } from 'react-bootstrap';
 import './LoginPage.css'
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { APIMethod, UserType } from '../../interface/models';
+import { UserType } from '../../interface/models';
 import { RootState } from '../..';
 import { loginRequest } from '../../reducers/actionCreators';
 
@@ -32,8 +32,7 @@ const LoginPage = () => {
 
     const handleLogin = async() => {
         dispatch(loginRequest({
-            method: APIMethod.POST,
-            path: "login",
+            params: null,
             body: signinInfo
         }))
     }

@@ -19,9 +19,8 @@ const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT, closeM
             alert("Passwords does not match!")
         } else{
             dispatch(createUserRequest({
-                method: APIMethod.POST,
-                path: "admin/user",
-                body: form
+                body: form,
+                params: null
             }))
             setForm({ firstName:"", lastName: "", email:"", password:"", userType: props.userType})
             setConfirmedPassword("")

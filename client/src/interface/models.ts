@@ -1,3 +1,5 @@
+import { Type } from "typescript"
+
 export enum UserType {
     ADMIN = 'admin',
     TEACHER = 'teacher',
@@ -93,9 +95,12 @@ export enum APIMethod {
     DELETE = 'delete'
 }
 
-export interface APIRequest {
-    path: string,
-    body: any,
-    method: APIMethod.GET | APIMethod.POST | APIMethod.PATCH | APIMethod.DELETE
+export interface APIRequestInput<Type>{
+    body: Type | null,
+    params: string | null
 }
 
+export interface SignInInfo {
+    email: string,
+    password: string
+}

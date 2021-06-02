@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from "react"
-import { Button, Col, Container, Row, Table, Modal } from "react-bootstrap"
+import { useEffect, useState } from "react"
+import { Col, Row, Modal } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
-import { useHistory } from "react-router-dom"
 import InputClassForm from "./InputClassForm"
 import NavbarComponent from "../common/NavBarComponent"
 import DisplayTable from "./DisplayTable"
 import { RootState } from '../..'
-import { APIMethod } from "../../interface/models"
 import { fetchClassesRequest } from "../../reducers/actionCreators"
+import { ButtonLabel, Button } from "../common/styledComponents"
 
 const ManagerClass = () => {
     const loaclStorage = localStorage.getItem('profile')
-    const {email} = JSON.parse( loaclStorage ? loaclStorage: "")
-    const history = useHistory()
+    const {accessToken, email} = JSON.parse( loaclStorage ? loaclStorage: "")
     const dispatch = useDispatch()
     const [showCreateClass, setShowCreateClass] = useState(false)
     const { classList } = useSelector((state: RootState) => state.teacher)
 
     useEffect(() => {
         dispatch(fetchClassesRequest({
-            method: APIMethod.GET,
-            path: `teacher/class/${email}`,
-            body: null
+            body: null,
+            params: accessToken
         }))
 
     }, [dispatch])
@@ -29,17 +26,30 @@ const ManagerClass = () => {
     return(
         <div>
             <NavbarComponent />
-            <h1 className="text-center">Manage Class  <Button onClick={() => setShowCreateClass(true)}>Add Class</Button></h1>
-            <Container>
+                <Row>
+                    <h1 className="ml-3">Manage Class</h1>
+                        <Button 
+                            className="mt-2 ml-3"
+                            bgColor="#1E90FF" 
+                            hoveredBgColor="#4169E1"
+                            borderColor= "#1E90FF"
+                            onClick={() => setShowCreateClass(true)}
+                        >
+                            <ButtonLabel
+                                color="white"
+                                hoveredColor="white"
+                            >
+                                Add Class
+                            </ButtonLabel>
+                        </Button>
+
+                </Row>
                 <Row>
                     <Col>
                         <DisplayTable list={classList}/>
                     </Col>
                 </Row>
-            </Container>
-            <Button variant="outline-dark" size="lg" onClick={()=>history.push('/teacher')}>
-                Back
-            </Button>
+
 
             <Modal show={showCreateClass} onHide={() => setShowCreateClass(false)}>
                 <Modal.Header closeButton>

@@ -16,9 +16,8 @@ const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
     const handleDeleteUser = (email: string) => {
         dispatch(deleteUserRequest({
-            method: APIMethod.DELETE,
-            path: `admin/user/${email}`,
-            body: null
+            body: null,
+            params: email
         }))
     }
 

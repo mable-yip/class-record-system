@@ -16,7 +16,8 @@ usersRouter.post("/login", async (request, response) => {
 
     try {
         if (await bcrypt.compare(request.body.password, user.password)){ // Authenication pass 
-            const token = jwt.sign(user, "jwtSecret")
+            console.log(user.email)
+            const token = jwt.sign(user.email, "jwtSecret")
             // , {
             //     expiresIn: 500
             // })  

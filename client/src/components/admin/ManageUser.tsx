@@ -8,7 +8,7 @@ import InputUserForm from './InputUserForm';
 import { RootState } from '../..';
 import { fetchStudentsRequest, fetchTeachersRequest } from '../../reducers/actionCreators';
 
-const AdminHomePage = () => {
+const ManagerUser = () => {
     const dispatch = useDispatch()
     const [showCreateTeacher, setShowCreateTeacher] = useState(false)
     const [showCreateStudent, setShowCreatetudent] = useState(false)
@@ -24,17 +24,13 @@ const AdminHomePage = () => {
 
 
     useEffect(() => {
-        console.log("called_dispatch")
         dispatch(fetchTeachersRequest({
-            method: APIMethod.GET,
-            path: "admin/allTeachers",
-            body: null
+            body: null,
+            params: null
         }))
-
         dispatch(fetchStudentsRequest({
-            method: APIMethod.GET,
-            path: "admin/allStudents",
-            body: null
+            body: null,
+            params: null
         }))
     }, [dispatch])
 
@@ -95,8 +91,7 @@ const AdminHomePage = () => {
                 </Modal.Body>
             </Modal>
         </div>
-
     )
 }
 
-export default AdminHomePage
+export default ManagerUser

@@ -1,9 +1,10 @@
-import React, { useState } from "react"
-import { Button, Table } from "react-bootstrap"
-import { useDispatch, useSelector } from "react-redux";
-import { APIMethod, ClassModel } from "../../interface/models";
+import { Table } from "react-bootstrap"
+import { useDispatch } from "react-redux";
+import { ClassModel } from "../../interface/models";
 import { deleteClassRequest } from "../../reducers/actionCreators";
 import { Link } from 'react-router-dom'
+import { ButtonLabel, Button } from "../common/styledComponents"
+
 
 interface Props { 
     list: { 
@@ -11,16 +12,15 @@ interface Props {
     }
 }
 
-
+//params
 const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
     const listArray  = Object.values(props.list)
 
     const handleDelete = (classId: string) => {
         dispatch(deleteClassRequest({
-            method: APIMethod.DELETE,
-            path: `teacher/class/${classId}`,
-            body: null
+            body: null,
+            params: classId
         }))
     }
 
@@ -38,14 +38,23 @@ const DisplayTable = (props: Props) => {
                     listArray.map(classObj => 
                         <tr key={classObj._id}>
                             <td> 
-                                <Link to={`/teacher/class/${classObj._id}`}>
+                                <Link to={`/teacher/${classObj._id}`}>
                                     {classObj.className}
                                 </Link> 
                             </td>
                             <td> {classObj.startDate} </td>
                             <td> 
-                                <Button className="btn btn-outline-danger" onClick={() => handleDelete(classObj._id)}>
-                                        Delete 
+                                <Button 
+                                    bgColor="#1E90FF" 
+                                    hoveredBgColor="#4169E1"
+                                    borderColor= "#1E90FF"
+                                    onClick={() => handleDelete(classObj._id)}>
+                                    <ButtonLabel
+                                        color="white"
+                                        hoveredColor="white"
+                                    >
+                                        Delete
+                                    </ButtonLabel>
                                 </Button>                             
                             </td>
                         </tr>                        

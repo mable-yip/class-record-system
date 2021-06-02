@@ -20,9 +20,8 @@ const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) 
     const handleSubmit = () => {
         console.log("```", form)
         dispatch(createClassRequest({
-            method: APIMethod.POST,
-            path: "teacher/class",
-            body: form
+            body: form,
+            params: null
         }))
         setForm({ className:"", teacherEmail: props.teacherEmail, studentsEmail:[], startDate:"", repeat: {
             cycle: "",

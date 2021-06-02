@@ -1,11 +1,13 @@
-import axios from 'axios';
+import axios, { Method } from 'axios';
 import { AnyAction } from 'redux';
+import { APIMethod } from '../interface/models';
 import { loginFail, loginRequest, loginSucess } from '../reducers/actionCreators';
 import { createUserFail, createUserRequest, createUserSuccess, deleteUserFail, deleteUserRequest, deleteUserSuccess, fetchStudentsFail, fetchStudentsRequest, fetchStudentsSuccess, fetchTeachersFail, fetchTeachersRequest, fetchTeachersSuccess,
 createClassFail, createClassRequest, createClassSuccess, deleteClassFail, deleteClassRequest, deleteClassSuccess, fetchClassesFail, fetchClassesRequest, fetchClassesSuccess } from '../reducers/actionCreators';
 import { API } from './StoreMiddleware'
 
 const url = 'http://localhost:5000';
+axios.defaults.baseURL = url
 
 const actionMap = {
   [loginRequest.type]: [loginSucess, loginFail],
@@ -18,44 +20,54 @@ const actionMap = {
   [deleteClassRequest.type]: [deleteClassSuccess, deleteClassFail]
 }
 
+// API method, url, isTokenRequired
+const apiCallMap = {
+  [loginRequest.type]: [ APIMethod.POST, "login", false],
+  [fetchTeachersRequest.type]: [ APIMethod.GET, "admin/allTeachers", true ], // assuming the params is at the end of the url
+  [fetchStudentsRequest.type]: [ APIMethod.GET, "admin/allStudents", true ],
+  [createUserRequest.type]: [ APIMethod.POST, "admin/user", true],
+  [deleteUserRequest.type]: [ APIMethod.DELETE, "admin/user/", true],
+  [fetchClassesRequest.type]: [ APIMethod.GET, "teacher/class/", true],
+  [createClassRequest.type]: [ APIMethod.POST, "teacher/class", true],
+  [deleteClassRequest.type]: [ APIMethod.DELETE, "teacher/class/", true],
+}
+
 export const FetchMiddleware = (store: any) => (next: any) => (action: AnyAction) => {  
+
     console.log("FetchMiddleware: action type = ", action.type)
+    next(action)
 
-    next(action)  
-    if(action.type === "LOGIN_REQUEST"){
-      axios.post(`${url}/${action.payload.path}`, action.payload.body).then((response)=>{
-        console.log(response)
-        store.dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: response.data
-        })
-      }).catch((error)=> {
-        store.dispatch({
-        type: "LOGIN_FAILED",
-        payload: error.response.data
-      })
-    }) }
-
-
-      else if (action.type.substr(action.type.length - 7) === "REQUEST"){
-        console.log("action.type", action.type)
-        const actions = actionMap[action.type]
-
-        const [actionSuccess, actionFail] = actions
-        const { body, path, method } = action.payload
-
+    if (action.type.slice(-7) === "REQUEST"){
+      const apiCall = apiCallMap[action.type]
+      const actions = actionMap[action.type]
+      const [ method, path, isTokenRequired ] = apiCall  
+      const [actionSuccess, actionFail] = actions
+      const url = action.payload.params? path + action.payload.params: path
+  
+      if (isTokenRequired){
         API.request({
-          method,
-          url: path,
-          data: body
+          method: method as Method,
+          url: url,
+          data: action.payload.body
         }).then(({data}) => {
-          const successAction = actionSuccess(data)
-          console.log("successAction", successAction)
-          store.dispatch(successAction)
+          store.dispatch(actionSuccess(data))
         })
         .catch((error) => {
-          console.log(error.response.data, action.type)
+          store.dispatch(actionFail(error)) // accpet string only
+        })
+      } else {
+        axios({
+          method: method as Method,
+          url: url,
+          data: action.payload.body
+        }).then(({data}) => {
+          store.dispatch(actionSuccess(data))
+        })
+        .catch((error) => {
+          console.log("!!!", error.response.data)
           store.dispatch(actionFail(error.response.data))
         })
-      } 
+      }
     }
+  }
+    
