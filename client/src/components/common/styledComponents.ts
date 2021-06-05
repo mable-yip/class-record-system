@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const ButtonLabel = styled.label<{color: string, hoveredColor: string}>`
+export const ButtonLabel = styled.label<{color: string}>`
     color: ${(props) => props.color};
     font-size: 17px;
     padding-left: 5px;
@@ -8,13 +8,9 @@ export const ButtonLabel = styled.label<{color: string, hoveredColor: string}>`
     padding-bottom: 5px;
     padding-right: 5px;
     cursor: pointer;
-
-    &:hover {
-        color: ${(props) => props.hoveredColor};
-    }
 `
 
-export const Button = styled.button<{bgColor: string, hoveredBgColor: string, borderColor: string}>`
+export const Button = styled.button<{bgColor: string, hoveredBgColor: string, borderColor: string, hoveredLabelColor: string}>`
     width: auto;
     height: 35px;
     background-color: ${(props) => props.bgColor};
@@ -24,5 +20,8 @@ export const Button = styled.button<{bgColor: string, hoveredBgColor: string, bo
 
     &:hover {
         background-color: ${(props) => props.hoveredBgColor};
+        & label {
+            color: ${(props) => props.hoveredLabelColor};
+        }
     }
 `

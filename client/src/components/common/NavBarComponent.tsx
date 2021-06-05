@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
-import { Navbar, Button } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from "react-router-dom";
-import { RootState } from "../..";
+import { useDispatch } from 'react-redux';
+import { useHistory } from "react-router-dom";
 import { logout } from "../../reducers/actionCreators";
+import jwt_decode from 'jwt-decode';
+import { AdminInfo, StudentInfo, TeacherInfo } from "../../interface/models";
+import "./navbar.css"
+import { Button, ButtonLabel } from './styledComponents';
 
-const NavbarComponent = () => {
-    const loaclStorage = localStorage.getItem('profile')
-    const {email, userType} = JSON.parse( loaclStorage ? loaclStorage: "")
+const NavBarComponent = () => {
+    const accessToken = localStorage.getItem('profile')
+    const user : AdminInfo | TeacherInfo | StudentInfo | null = accessToken ? jwt_decode(accessToken) : null
+    console.log(user)
     const dispatch = useDispatch()
     let history = useHistory()
 
@@ -17,21 +19,28 @@ const NavbarComponent = () => {
     };
     
     return (
-        <Navbar bg="dark" variant="dark">
-            <Navbar.Brand>
-                {userType.charAt(0).toUpperCase() + userType.slice(1)}: {email}
-            </Navbar.Brand>
-
-            <Navbar.Brand className="ml-auto" onClick={handleLogout}>
-                <Button className="btn-lg btn-dark">
-                    Logout
+        <nav className="navbar">
+            <div> 
+                <h3>{user&&user.userType.charAt(0).toUpperCase() + user?.userType.slice(1)}: {user?.email}</h3>
+            </div>
+            <div>            
+                <Button 
+                    bgColor="white" 
+                    hoveredBgColor="black"
+                    borderColor= "black"
+                    hoveredLabelColor="white"
+                    onClick={handleLogout}
+                > 
+                    <ButtonLabel
+                        color="black"
+                    > 
+                        Logout 
+                    </ButtonLabel>
                 </Button>
-            </Navbar.Brand>
-        </Navbar>
+            </div>
+        </nav>
     )
 }
 
-export default NavbarComponent
-
-
+export default NavBarComponent
 

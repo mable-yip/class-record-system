@@ -10,6 +10,7 @@ const authenticateToken = (req, res, next) => {
 
         if (err) return res.sendStatus(403) // token is no longer valid
         req.user =  user
+        console.log("!!!", user)
         next()
     })
 }

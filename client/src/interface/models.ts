@@ -30,6 +30,10 @@ export interface Student {
     userType: UserType.STUDENT
 }
 
+export type AdminInfo = Omit<Admin, "password"> 
+export type TeacherInfo = Omit<Teacher, "password"> 
+export type StudentInfo = Omit<Student, "_password"> 
+
 export interface AdminReducerState {
     loadingTeachers: boolean,
     loadingStudents: boolean,
@@ -47,7 +51,7 @@ export interface AdminReducerState {
 export enum CycleType {
     DAILY = 'daily',
     WEEKLY = 'weekly',
-    FORNIGHTLY = 'fornughtly',
+    FORNIGHTLY = 'fornightly',
     MONTHLY = 'monthly'
 }
 
@@ -73,19 +77,21 @@ export interface TeacherReducerState {
     error: null | string,
     classList: {
         [email: string]: ClassModel
-    }
-}
-
-export interface AuthData {
-    accessToken: string,
-    email: string,
-    userType: string
+    },
+    studentList: {
+        [email: string]: Student
+    },
+    currentClass: ClassModel | null
 }
 
 export interface AuthReducerState {
-    authData: AuthData | null,
+    firstName: string | null,
+    lastName: string | null,
+    email: string | null,
+    userType: UserType.ADMIN | UserType.STUDENT | UserType.TEACHER | null,
     error: string | null,
-    loading: boolean
+    loading: boolean,
+    signIn: boolean
 }
 
 export enum APIMethod {
@@ -96,11 +102,16 @@ export enum APIMethod {
 }
 
 export interface APIRequestInput<Type>{
-    body: Type | null,
-    params: string | null
+    body?: Type,
+    params?: string 
 }
 
 export interface SignInInfo {
     email: string,
     password: string
+}
+
+export enum InputFormType {
+    CREATE = "create",
+    EDIT = "edit"
 }

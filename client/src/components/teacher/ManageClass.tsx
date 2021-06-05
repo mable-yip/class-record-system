@@ -2,66 +2,57 @@ import { useEffect, useState } from "react"
 import { Col, Row, Modal } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import InputClassForm from "./InputClassForm"
-import NavbarComponent from "../common/NavBarComponent"
 import DisplayTable from "./DisplayTable"
 import { RootState } from '../..'
 import { fetchClassesRequest } from "../../reducers/actionCreators"
 import { ButtonLabel, Button } from "../common/styledComponents"
+import { InputFormType } from "../../interface/models"
+import "./manageClass.css"
 
 const ManagerClass = () => {
-    const loaclStorage = localStorage.getItem('profile')
-    const {accessToken, email} = JSON.parse( loaclStorage ? loaclStorage: "")
     const dispatch = useDispatch()
     const [showCreateClass, setShowCreateClass] = useState(false)
     const { classList } = useSelector((state: RootState) => state.teacher)
+    const { email } = useSelector((state: RootState) => state.auth)
 
     useEffect(() => {
-        dispatch(fetchClassesRequest({
-            body: null,
-            params: accessToken
-        }))
-
+        dispatch(fetchClassesRequest({}))
     }, [dispatch])
     
     return(
-        <div>
-            <NavbarComponent />
-                <Row>
-                    <h1 className="ml-3">Manage Class</h1>
+        email!==null?
+            <div className="classList">
+                    <div>
+                        <h1 className="ml-3">Manage Class</h1>
                         <Button 
                             className="mt-2 ml-3"
                             bgColor="#1E90FF" 
                             hoveredBgColor="#4169E1"
                             borderColor= "#1E90FF"
+                            hoveredLabelColor="white"
                             onClick={() => setShowCreateClass(true)}
                         >
-                            <ButtonLabel
-                                color="white"
-                                hoveredColor="white"
-                            >
-                                Add Class
-                            </ButtonLabel>
+                            <ButtonLabel color="white"> Add Class </ButtonLabel>
                         </Button>
+                    </div>
 
-                </Row>
-                <Row>
-                    <Col>
-                        <DisplayTable list={classList}/>
-                    </Col>
-                </Row>
+                    <div className="mt-4">
+                        <DisplayTable email={email} classModelObj={classList}/>
+                    </div>
 
-
-            <Modal show={showCreateClass} onHide={() => setShowCreateClass(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Add Class
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <InputClassForm teacherEmail={email} closeModal={()=>setShowCreateClass(false)}/>
-                </Modal.Body>
-            </Modal>
-        </div>
+                <Modal show={showCreateClass} onHide={() => setShowCreateClass(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title> Create Class </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <InputClassForm 
+                            teacherEmail={email} 
+                            closeModal={()=>setShowCreateClass(false)} 
+                            formType={InputFormType.CREATE}
+                        />
+                    </Modal.Body>
+                </Modal>
+            </div>:null
     )
 }
 

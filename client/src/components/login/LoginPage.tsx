@@ -9,7 +9,7 @@ import { loginRequest } from '../../reducers/actionCreators';
 
 const LoginPage = () => {
     const [signinInfo, setSigninInfo] = useState({ email:"", password:""})
-    const { authData, loading, error  } = useSelector((state: RootState) => state.auth)
+    const { signIn, userType, loading, error  } = useSelector((state: RootState) => state.auth)
     const history = useHistory()
     const dispatch = useDispatch()
 
@@ -19,20 +19,19 @@ const LoginPage = () => {
     }
 
     useEffect(()=>{
-        if(authData){
-            if(authData.userType === UserType.ADMIN){
+        if(signIn){
+            if(userType === UserType.ADMIN){
                 history.push('/admin')
-            } else if (authData.userType === UserType.STUDENT){
+            } else if (userType === UserType.STUDENT){
                 history.push('/student')
-            } else if (authData.userType === UserType.TEACHER){
+            } else if (userType === UserType.TEACHER){
                 history.push('/teacher')
             }
         }
-    }, [authData])
+    }, [signIn])
 
     const handleLogin = async() => {
         dispatch(loginRequest({
-            params: null,
             body: signinInfo
         }))
     }

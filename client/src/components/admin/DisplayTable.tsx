@@ -1,8 +1,9 @@
 import React from "react"
-import { Alert, Button, Table } from "react-bootstrap"
+import { Table } from "react-bootstrap"
 import { useDispatch } from "react-redux";
 import { UserType, Teacher, Student, APIMethod} from '../../interface/models'
 import { deleteUserRequest } from "../../reducers/actionCreators";
+import { Button, ButtonLabel } from "../common/styledComponents";
 
 interface Props { 
     list: { 
@@ -40,10 +41,18 @@ const DisplayTable = (props: Props) => {
                             <td> {user.lastName} </td>
                             <td> 
                                 <Button 
-                                    className="btn btn-outline-danger" 
-                                    onClick={() => handleDeleteUser(user.email)}>
+                                    bgColor="white" 
+                                    hoveredBgColor="red"
+                                    borderColor= "red"
+                                    hoveredLabelColor="white"
+                                    onClick={() => handleDeleteUser(user.email)}
+                                > 
+                                    <ButtonLabel
+                                        color="red"
+                                    > 
                                         Delete 
-                                </Button>                             
+                                    </ButtonLabel>
+                                </Button>                         
                             </td>
                         </tr>                        
                     )

@@ -16,12 +16,14 @@ usersRouter.post("/login", async (request, response) => {
 
     try {
         if (await bcrypt.compare(request.body.password, user.password)){ // Authenication pass 
-            console.log(user.email)
-            const token = jwt.sign(user.email, "jwtSecret")
+            delete user.password
+
+            console.log(user)
+            const token = jwt.sign(user, "jwtSecret")
             // , {
             //     expiresIn: 500
             // })  
-            response.status(200).send({auth: true, accessToken: token, userType: user.userType, email: user.email});
+            response.status(200).send(token);
         } else{
             response.status(401).send("Wrong username/password");
         }
@@ -31,7 +33,10 @@ usersRouter.post("/login", async (request, response) => {
 });
 
 
-usersRouter.get("/user/:email", async (req, res)=>{
+usersRouter.get("/user/:email", authenticateToken, async (req, res)=>{
+    console.log("auth middleware user", req.user)
+    console.log("req.params.email", req.params.email)
+
     const user = await getCollection('user').findOne({ email: req.params.email})
     if (user === null){
         res.status(400).send("Cannot find user")
@@ -63,7 +68,7 @@ usersRouter.post("/admin/user", authenticateToken, async (request, response) => 
 /**
  * Handles a DELETE request to delete a user
  */
-usersRouter.delete("/admin/user/:email", async (request, response) => {
+usersRouter.delete("/admin/user/:email", authenticateToken, async (request, response) => {
     try {
         const user = await getCollection('user').findOne({ email: request.params.email})
         await getCollection('user').deleteOne({ "email" : request.params.email })
@@ -78,7 +83,7 @@ usersRouter.delete("/admin/user/:email", async (request, response) => {
  */
 usersRouter.get("/admin/allTeachers", authenticateToken, async (request, response) => {
     try{
-        const result = await getCollection('user').find({ userType: "teacher"}).toArray()
+        const result = await getCollection('user').find({ userType: "teacher"}, { password: 0}).toArray()
         response.status(200).send(result)
     } catch(error){
         response.status(500).send(error);
@@ -89,10 +94,11 @@ usersRouter.get("/admin/allTeachers", authenticateToken, async (request, respons
  * Handle a GET request to get all the students in the database 
  */
 usersRouter.get("/admin/allStudents", authenticateToken, async (request, response) => {
-
     try{
-        const result = await getCollection('user').find({ userType: "student"}).toArray()
-        response.status(200).send(result)
+        console.log("ALLLLLLLLLLLLL")
+        const results = await getCollection('user').find({ userType: "student"}, { password: 0}).toArray()
+        results.map(result => delete result.password)
+        response.status(200).send(results)
     } catch(error){
         response.status(500).send(error)
     }

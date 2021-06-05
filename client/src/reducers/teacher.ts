@@ -1,13 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { TeacherReducerState } from '../interface/models'
-import { createClassFail, createClassFailReturnType, createClassSuccess, createClassSuccessReturnType, deleteClassFail, deleteClassFailReturnType, deleteClassSuccess, deleteClassSuccessReturnType, fetchClassesFail, fetchClassesFailReturnType, fetchClassesRequest, fetchClassesSuccess } from './actionCreators'
+import { createClassFail, createClassFailReturnType, createClassSuccess, createClassSuccessReturnType, deleteClassFail, deleteClassFailReturnType, deleteClassSuccess, deleteClassSuccessReturnType, fetchClassesFail, fetchClassesFailReturnType, fetchClassesRequest, fetchClassesSuccess, fetchStudentsFail, FetchStudentsFailReturnType, fetchStudentsSuccess, FetchStudentsSuccessReturnType, getClassFail, getClassFailReturnType, getClassSuccess, getClassSuccessReturnType, updateClassFail, updateClassFailReturnType, updateClassSuccess, updateClassSuccessReturnType } from './actionCreators'
 
 const initalState : TeacherReducerState = {
     loading: false,
     classList: {},
+    currentClass: null,
+    studentList: {},
     error: null
 }
-
 
 const teacherReducer = createReducer(initalState, {
     [fetchClassesRequest.type]: (state: TeacherReducerState) => {
@@ -21,17 +22,34 @@ const teacherReducer = createReducer(initalState, {
             }
             }, {})
         state.classList = dataObj
+        state.currentClass = null
         state.loading = false
     },
     [fetchClassesFail.type]: (state: TeacherReducerState, { payload } : fetchClassesFailReturnType) => {
         state.error = payload
         state.loading = false
     },
-
+    [getClassSuccess.type]: (state: TeacherReducerState, { payload } : getClassSuccessReturnType) => {
+        state.currentClass = payload
+    },
+    [getClassFail.type]: (state: TeacherReducerState, { payload } : getClassFailReturnType) => {
+        state.error = payload
+    },
     [createClassSuccess.type]: (state: TeacherReducerState, { payload } : createClassSuccessReturnType) => {
         state.classList[payload._id] = payload
     },
     [createClassFail.type]: (state: TeacherReducerState, { payload } : createClassFailReturnType) => {
+        state.error = payload
+    },
+    [updateClassSuccess.type]: (state: TeacherReducerState, { payload } : updateClassSuccessReturnType) => {
+        console.log(payload)
+        state.classList[payload._id].className = payload.className
+        state.classList[payload._id].repeat = payload.repeat
+        state.classList[payload._id].startDate = payload.startDate
+        state.classList[payload._id].studentsEmail = payload.studentsEmail
+        state.classList[payload._id].teacherEmail = payload.teacherEmail
+    },
+    [updateClassFail.type]: (state: TeacherReducerState, { payload } : updateClassFailReturnType) => {
         state.error = payload
     },
     [deleteClassSuccess.type]: (state: TeacherReducerState, { payload } : deleteClassSuccessReturnType) => {
@@ -39,7 +57,18 @@ const teacherReducer = createReducer(initalState, {
     },
     [deleteClassFail.type]: (state: TeacherReducerState, { payload } : deleteClassFailReturnType) => {
         state.error = payload
-    }
+    },
+    [fetchStudentsSuccess.type]: (state: TeacherReducerState, { payload } : FetchStudentsSuccessReturnType) => {
+        const dataObj = payload.reduce((obj: any, item: { [x: string]: any }) => {
+            return {
+                ...obj, [item['email']]: item,
+            }
+            }, {})
+        state.studentList = dataObj
+    },
+    [fetchStudentsFail.type]: (state: TeacherReducerState, { payload } : FetchStudentsFailReturnType) => {
+        state.error = payload
+    },
 })  
 
 export default teacherReducer

@@ -1,10 +1,12 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { RootState } from "../..";
-import NavbarComponent from "../common/NavBarComponent";
 import SearchStudent from "./SearchStudent";
 import { ButtonLabel, Button } from "../common/styledComponents"
 import "./classDetail.css"
+import { useEffect } from "react";
+import { getClassRequest, updateClassRequest } from "../../reducers/actionCreators";
+import { ClassModelPreview } from "../../interface/models";
 
 interface ParamTypes {
     class_id: string
@@ -12,10 +14,33 @@ interface ParamTypes {
 
 const ClassDetail = () => {
     let history = useHistory();
+    const dispatch = useDispatch()
     const { class_id } = useParams<ParamTypes>()
-    const { classList } = useSelector((state: RootState) => state.teacher)
 
-    console.log(classList)
+    useEffect(() => {
+        dispatch(getClassRequest({
+            params: class_id
+        }))
+    }, [class_id])
+    
+    const { currentClass } = useSelector((state: RootState) => state.teacher)
+
+    const deleteStudentFromClass = (deletedEmail: string) => {
+        if(currentClass){
+            const classModelPreview: ClassModelPreview = {
+                className: currentClass.className,
+                repeat: currentClass.repeat,
+                startDate : currentClass.startDate,
+                teacherEmail : currentClass.teacherEmail,
+                studentsEmail : currentClass.studentsEmail.filter(email => email !== deletedEmail)
+            }
+    
+            dispatch(updateClassRequest({
+                body: classModelPreview,
+                params: class_id
+            }))
+        }
+    }
 
     const handleClick = () => {
         history.push("/teacher");
@@ -23,14 +48,22 @@ const ClassDetail = () => {
     
     return(
         <div>
-            <NavbarComponent />
             <div className="container mt-4">
                 <div className="classDetail">
-                    <h3>ClassName: {classList[class_id].className}</h3>
-                    <h3>Start Date: {classList[class_id].startDate}</h3>
-                    <h3>Start Time: {classList[class_id].repeat.startTime} </h3>
-                    <h3>End Time: {classList[class_id].repeat.endTime} </h3>
-                    <h3>Repeat: {classList[class_id].repeat.cycle} </h3>
+                    <h3>ClassName: {currentClass?.className}</h3>
+                    <h3>Start Date: {currentClass?.startDate}</h3>
+                    <h3>Start Time: {currentClass?.repeat.startTime} </h3>
+                    <h3>End Time: {currentClass?.repeat.endTime} </h3>
+                    <h3>Repeat: {currentClass?.repeat.cycle} </h3>
+                    <h3>
+                        Student List:{
+                        currentClass?.studentsEmail.map(email => (
+                            <div key={email}>
+                                {email} 
+                                <button onClick={() => deleteStudentFromClass(email)}> Remove </button>
+                            </div>
+                        ))}
+                    </h3>
 
                 </div>
                 <div className="searchStudent">
@@ -42,11 +75,11 @@ const ClassDetail = () => {
                 bgColor="white" 
                 hoveredBgColor="black"
                 borderColor= "black"
+                hoveredLabelColor="white"
                 onClick={handleClick}
             > 
                 <ButtonLabel
                     color="black"
-                    hoveredColor="white"
                 > 
                     Back 
                 </ButtonLabel>

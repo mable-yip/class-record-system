@@ -1,16 +1,42 @@
 import React, {useState} from 'react'
 import { Button, Form, FormGroup } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { APIMethod, ClassModelPreview, CycleType } from '../../interface/models'
-import { createClassRequest } from '../../reducers/actionCreators';
+import { ClassModel, ClassModelPreview, CycleType, InputFormType } from '../../interface/models'
+import { createClassRequest, updateClassRequest } from '../../reducers/actionCreators';
 
-const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) => {
+interface Props {
+    teacherEmail: string, 
+    closeModal: () => void, 
+    formType: InputFormType.CREATE | InputFormType.EDIT,
+    class?: ClassModel
+}
+
+const InputClassForm = (props: Props ) => {
     const dispatch = useDispatch()
-    const [form, setForm] = useState<ClassModelPreview>({ className:"", teacherEmail: props.teacherEmail, studentsEmail:[], startDate:"", repeat: {
-        cycle: "",
-        startTime: "",
-        endTime: ""
-    }})
+    const [form, setForm] = useState<ClassModelPreview>(props.class? 
+        { 
+            className: props.class.className, 
+            teacherEmail: props.teacherEmail, 
+            studentsEmail:props.class.studentsEmail, 
+            startDate:props.class.startDate, 
+            repeat: {
+                cycle: props.class.repeat.cycle,
+                startTime: props.class.repeat.startTime,
+                endTime: props.class.repeat.endTime
+            }
+        } :
+        { 
+            className:"", 
+            teacherEmail: props.teacherEmail, 
+            studentsEmail:[], 
+            startDate:"", 
+            repeat: {
+                cycle: "",
+                startTime: "",
+                endTime: ""
+            }
+        }
+    )
 
     const handleOnChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value
@@ -18,11 +44,18 @@ const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) 
     }
 
     const handleSubmit = () => {
-        console.log("```", form)
-        dispatch(createClassRequest({
-            body: form,
-            params: null
-        }))
+        if (props.formType === InputFormType.CREATE){
+            dispatch(createClassRequest({
+                body: form
+            }))
+        }
+        if (props.formType === InputFormType.EDIT){
+            dispatch(updateClassRequest({
+                body: form,
+                params: props.class?._id
+            }))
+        }
+
         setForm({ className:"", teacherEmail: props.teacherEmail, studentsEmail:[], startDate:"", repeat: {
             cycle: "",
             startTime: "",
@@ -94,7 +127,7 @@ const InputClassForm = (props: {teacherEmail: string, closeModal: () => void} ) 
                         props.closeModal()
                     }}
                 >
-                    Create Class
+                    Confirm
                 </Button>
 
             </Form>

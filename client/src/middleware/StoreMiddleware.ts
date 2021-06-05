@@ -7,10 +7,8 @@ export const API = axios.create({ baseURL: url });
 
 API.interceptors.request.use((req) => {
     const storage = localStorage.getItem('profile')
-
     if (storage) {
-        const tokenValue = JSON.parse(storage).accessToken
-        req.headers.authorization = `Bearer ${tokenValue}`;
+        req.headers.authorization = `Bearer ${storage}`;
     }
 
     console.log("get token")
@@ -23,7 +21,7 @@ export const StoreMiddleware = (store: any) => (next: any) => (action: AnyAction
     console.log("storeMiddleware: action type = ", action.type)
   
     if(action.type === "LOGIN_SUCCESS"){
-      localStorage.setItem('profile', JSON.stringify(action.payload))
+      localStorage.setItem('profile', action.payload)
     } else if(action.type === "LOGOUT"){
       localStorage.clear()
     }

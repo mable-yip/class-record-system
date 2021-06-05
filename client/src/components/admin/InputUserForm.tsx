@@ -19,8 +19,7 @@ const InputForm = (props: {userType: UserType.TEACHER | UserType.STUDENT, closeM
             alert("Passwords does not match!")
         } else{
             dispatch(createUserRequest({
-                body: form,
-                params: null
+                body: form
             }))
             setForm({ firstName:"", lastName: "", email:"", password:"", userType: props.userType})
             setConfirmedPassword("")

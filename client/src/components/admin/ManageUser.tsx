@@ -1,20 +1,18 @@
-import NavbarComponent from '../common/NavBarComponent'
-import { APIMethod, UserType } from '../../interface/models'
-import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
+import { UserType } from '../../interface/models'
+import { Col, Container, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DisplayTable from './DisplayTable';
 import InputUserForm from './InputUserForm';
 import { RootState } from '../..';
-import { fetchStudentsRequest, fetchTeachersRequest } from '../../reducers/actionCreators';
+import { fetchStudentsRequest, fetchTeachersRequest, loginSuccess } from '../../reducers/actionCreators';
+import { Button, ButtonLabel } from '../common/styledComponents';
 
 const ManagerUser = () => {
     const dispatch = useDispatch()
     const [showCreateTeacher, setShowCreateTeacher] = useState(false)
     const [showCreateStudent, setShowCreatetudent] = useState(false)
     const { teacherList, studentList } = useSelector((state: RootState) => state.admin)
-
-    console.log(teacherList, studentList)
 
     const handleShowCreateTeacher = () => setShowCreateTeacher(true)
     const handleCloseCreateTeacher = () => setShowCreateTeacher(false)
@@ -24,19 +22,12 @@ const ManagerUser = () => {
 
 
     useEffect(() => {
-        dispatch(fetchTeachersRequest({
-            body: null,
-            params: null
-        }))
-        dispatch(fetchStudentsRequest({
-            body: null,
-            params: null
-        }))
+        dispatch(fetchTeachersRequest({}))
+        dispatch(fetchStudentsRequest({}))
     }, [dispatch])
 
     return (
         <div>
-            <NavbarComponent />
             <Container>
                 <Row>
                     <Col>
@@ -46,7 +37,19 @@ const ManagerUser = () => {
                                     <h2>Manage Teacher</h2>
                                 </div>
                                 <div className="col-sm-6">
-                                    <Button onClick={handleShowCreateTeacher} className="btn btn-success"> Add Teacher</Button>					
+                                    <Button 
+                                        bgColor="green" 
+                                        hoveredBgColor="darkgreen"
+                                        borderColor= "green"
+                                        hoveredLabelColor="white"
+                                        onClick={handleShowCreateTeacher}
+                                    > 
+                                        <ButtonLabel
+                                            color="white"
+                                        > 
+                                            Add Teacher 
+                                        </ButtonLabel>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +62,20 @@ const ManagerUser = () => {
                                     <h2>Manage Student</h2>
                                 </div>
                                 <div className="col-sm-6">
-                                    <Button onClick={handleShowCreateStudent} className="btn btn-success">Add Student</Button>					
+                                    <Button 
+                                        bgColor="green" 
+                                        hoveredBgColor="darkgreen"
+                                        borderColor= "green"
+                                        hoveredLabelColor="white"
+                                        onClick={handleShowCreateStudent}
+                                    > 
+                                        <ButtonLabel
+                                            color="white"
+                                        > 
+                                            Add Student 
+                                        </ButtonLabel>
+                                    </Button>
+
                                 </div>
                             </div>
                         </div>
