@@ -1,9 +1,8 @@
 import React from "react"
-import { Table } from "react-bootstrap"
 import { useDispatch } from "react-redux";
-import { UserType, Teacher, Student, APIMethod} from '../../interface/models'
+import { UserType, Teacher, Student } from '../../interface/models'
 import { deleteUserRequest } from "../../reducers/actionCreators";
-import { Button, ButtonLabel } from "../common/styledComponents";
+import { Button, ButtonLabel, Table, TableHead, TableData, Tr } from "../common/styledComponents";
 
 interface Props { 
     list: { 
@@ -11,7 +10,6 @@ interface Props {
     }, 
     userType: UserType.STUDENT | UserType.TEACHER
 }
-
 
 const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
@@ -23,40 +21,34 @@ const DisplayTable = (props: Props) => {
     }
 
     return (
-        <Table striped bordered hover>
-            <thead>
-                <tr>
+        <Table>
+            <TableHead>
                 <th>Email</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Action</th>
-                </tr>
-            </thead>
+            </TableHead>
             <tbody>
-                {
-                    Object.values(props.list).map((user) => 
-                        <tr key={user.email}>
-                            <td> {user.email} </td>
-                            <td> {user.firstName} </td>
-                            <td> {user.lastName} </td>
-                            <td> 
-                                <Button 
-                                    bgColor="white" 
-                                    hoveredBgColor="red"
-                                    borderColor= "red"
-                                    hoveredLabelColor="white"
-                                    onClick={() => handleDeleteUser(user.email)}
-                                > 
-                                    <ButtonLabel
-                                        color="red"
-                                    > 
-                                        Delete 
-                                    </ButtonLabel>
-                                </Button>                         
-                            </td>
-                        </tr>                        
-                    )
-                }
+            {
+                Object.values(props.list).map((user) => 
+                    <Tr key={user.email}>
+                        <TableData> {user.email} </TableData>
+                        <TableData> {user.firstName} </TableData>
+                        <TableData> {user.lastName} </TableData>
+                        <TableData> 
+                            <Button 
+                                bgColor="white" 
+                                hoveredBgColor="red"
+                                borderColor= "red"
+                                hoveredLabelColor="white"
+                                onClick={() => handleDeleteUser(user.email)}
+                            > 
+                                <ButtonLabel color="red"> Delete </ButtonLabel>
+                            </Button>                         
+                        </TableData>
+                    </Tr>                        
+                )
+            }
             </tbody>
         </Table>
     )

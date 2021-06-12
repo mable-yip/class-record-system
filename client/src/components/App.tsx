@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { RootState } from '..';
@@ -9,6 +9,8 @@ import LoginPage from './login/LoginPage'
 import StudentHomePage from './student/StudentHomePage';
 import ClassDetail from './teacher/ClassDetail';
 import ManageClass from './teacher/ManageClass';
+import ClassForm from "./teacher/ClassForm";
+import PrivateRoute from './route/PrivateRoute';
 
 const App = () =>{
   const dispatch = useDispatch()
@@ -26,10 +28,12 @@ const App = () =>{
       { auth.signIn && <NavBarComponent/> }
       <Switch>
         <Route exact path="/login"> <LoginPage /></Route>
-        <Route exact path="/admin"> < ManagerUser/></Route>
-        <Route exact path="/teacher"> <ManageClass /></Route>
-        <Route exact path="/student"> <StudentHomePage /></Route>
-        <Route exact path="/teacher/:class_id"> <ClassDetail /></Route>
+        <PrivateRoute path="/admin" component={ManagerUser} authenticationPath='./login' exact />
+        <PrivateRoute path="/teacher" component={ManageClass} authenticationPath='./login' exact />
+        <PrivateRoute path="/student" component={StudentHomePage} authenticationPath='./login' exact />
+        <PrivateRoute path="/teacher/class" component={ClassForm} authenticationPath='./login' exact />
+        <PrivateRoute path="/teacher/class/:classId" component={ClassForm} authenticationPath='./login' exact />
+        <PrivateRoute path="/teacher/class/info/:class_id" component={ClassDetail} authenticationPath='./login' exact />
         <Redirect to="/login"/>
       </Switch> 
     </div>

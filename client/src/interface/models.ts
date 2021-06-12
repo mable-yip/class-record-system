@@ -37,15 +37,16 @@ export type StudentInfo = Omit<Student, "_password">
 export interface AdminReducerState {
     loadingTeachers: boolean,
     loadingStudents: boolean,
-    errorTeachers: null | string,
-    errorStudents: null | string,
+    errorTeachers?: string,
+    errorStudents?: string,
     teacherList: {
         [email: string]: Teacher
     }
     studentList: {
         [email: string]: Student
     },
-    error: null | string
+    error?: string,
+    loading: boolean
 }
 
 export enum CycleType {
@@ -81,15 +82,15 @@ export interface TeacherReducerState {
     studentList: {
         [email: string]: Student
     },
-    currentClass: ClassModel | null
+    currentClass?: ClassModelPreview
 }
 
 export interface AuthReducerState {
-    firstName: string | null,
-    lastName: string | null,
-    email: string | null,
-    userType: UserType.ADMIN | UserType.STUDENT | UserType.TEACHER | null,
-    error: string | null,
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    userType?: UserType.ADMIN | UserType.STUDENT | UserType.TEACHER,
+    error?: string,
     loading: boolean,
     signIn: boolean
 }
@@ -114,4 +115,10 @@ export interface SignInInfo {
 export enum InputFormType {
     CREATE = "create",
     EDIT = "edit"
+}
+
+export interface BasicClassInfo {
+    className: string 
+    startDate: string
+    repeat: Repeat
 }

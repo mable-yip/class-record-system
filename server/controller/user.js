@@ -4,54 +4,45 @@ import express from 'express';
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import authenticateToken  from '../middleware/auth.js'
+import ApiError from '../error/ApiError.js'
 
 const usersRouter = express.Router();
 
 /**
  * Handles a POST request, which will compare the bcryted password
  */
-usersRouter.post("/login", async (request, response) => {
+usersRouter.post("/login", async (request, response, next) => {
+    console.log("login called")
     const user = await getCollection('user').findOne({ email: request.body.email})
-    if (user == null) return response.status(400).send("Cannot find user")
+    if (user == null) return next(ApiError.badRequest("Wrong username/password!"))
 
-    try {
-        if (await bcrypt.compare(request.body.password, user.password)){ // Authenication pass 
-            delete user.password
-
-            console.log(user)
-            const token = jwt.sign(user, "jwtSecret")
-            // , {
-            //     expiresIn: 500
-            // })  
-            response.status(200).send(token);
-        } else{
-            response.status(401).send("Wrong username/password");
-        }
-    } catch (error){
-        response.status(400).send(error.message)
+    if (await bcrypt.compare(request.body.password, user.password)){ // Authenication pass 
+        delete user.password
+        console.log(user)
+        const token = jwt.sign(user, "jwtSecret")
+        // , {
+        //     expiresIn: 500
+        // })  
+        response.status(200).send(token);
+    } else{
+        return next(ApiError.badRequest("Wrong username/password!"))
     }
 });
 
 
 usersRouter.get("/user/:email", authenticateToken, async (req, res)=>{
-    console.log("auth middleware user", req.user)
-    console.log("req.params.email", req.params.email)
-
     const user = await getCollection('user').findOne({ email: req.params.email})
-    if (user === null){
-        res.status(400).send("Cannot find user")
-    } else{
-        res.status(200).send(user)
-    }
+    if (user == null) return next(ApiError.badRequest("cannot find user"))
+    res.status(200).send(user)
 })
 
 /**
  * Handles a POST request to create a user
  */
-usersRouter.post("/admin/user", authenticateToken, async (request, response) => {
+usersRouter.post("/admin/user", authenticateToken, async (request, response, next) => {
 
     const existingUser = await getCollection('user').findOne({ email: request.body.email})
-    if(existingUser) return response.status(400).send("User already exist")
+    if(existingUser) return next(ApiError.badRequest("User already exist"))
 
     try{
         const salt =  await bcrypt.genSalt()
@@ -95,14 +86,25 @@ usersRouter.get("/admin/allTeachers", authenticateToken, async (request, respons
  */
 usersRouter.get("/admin/allStudents", authenticateToken, async (request, response) => {
     try{
-        console.log("ALLLLLLLLLLLLL")
-        const results = await getCollection('user').find({ userType: "student"}, { password: 0}).toArray()
-        results.map(result => delete result.password)
+        const results = await getCollection('user').find({ userType: "student"}).project({ password: 0}).toArray()
         response.status(200).send(results)
     } catch(error){
         response.status(500).send(error)
     }
 })
 
-export default usersRouter
+/**
+ * Handle a GET request to get all the students in the database 
+ */
+ usersRouter.post("/studentsByemails", async (request, response) => {
+    try{
+        const studentemails = request.body.studentemails
+        const results = await getCollection('user').find({ email: {$in: studentemails}}).project({ password: 0}).toArray()
+        response.status(200).send(results)
+    } catch(error){
+        console.log(error)
+        response.status(500).send(error)
+    }
+})
 
+export default usersRouter

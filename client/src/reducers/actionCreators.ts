@@ -24,6 +24,7 @@ export type FetchStudentsFailReturnType = ReturnType<typeof fetchStudentsFail>
 export const createUserRequest = createAction<APIRequestInput<Teacher|Student>>('CREATE_USER_REQUEST')
 export const createUserSuccess = createAction<Teacher|Student>('CREATE_USER_SUCCESS')
 export const createUserFail = createAction<string>('CREATE_USER_FAIL')
+export const clearError = createAction<null>('CLEAR_ERROR')
 export type createUserSuccessReturnType = ReturnType<typeof createUserSuccess>
 export type createUserFailReturnType = ReturnType<typeof createUserFail>
 
@@ -42,7 +43,7 @@ export type fetchClassesSuccessReturnType = ReturnType<typeof fetchClassesSucces
 export type fetchClassesFailReturnType = ReturnType<typeof fetchClassesFail>
 
 export const getClassRequest = createAction<APIRequestInput<null>>('GET_CLASS_REQUEST')
-export const getClassSuccess = createAction<ClassModel>('GET_CLASS_SUCCESS')
+export const getClassSuccess = createAction<ClassModelPreview>('GET_CLASS_SUCCESS')
 export const getClassFail = createAction<string>('GET_CLASS_FAIL')
 export type getClassSuccessReturnType = ReturnType<typeof getClassSuccess>
 export type getClassFailReturnType = ReturnType<typeof getClassFail>

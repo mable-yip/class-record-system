@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Button, Form, FormGroup, Spinner } from 'react-bootstrap';
+import { Alert, Button, Form, FormGroup } from 'react-bootstrap';
 import './LoginPage.css'
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import { loginRequest } from '../../reducers/actionCreators';
 
 const LoginPage = () => {
     const [signinInfo, setSigninInfo] = useState({ email:"", password:""})
-    const { signIn, userType, loading, error  } = useSelector((state: RootState) => state.auth)
+    const { signIn, userType, loading, error } = useSelector((state: RootState) => state.auth)
     const history = useHistory()
     const dispatch = useDispatch()
 
@@ -22,9 +22,11 @@ const LoginPage = () => {
         if(signIn){
             if(userType === UserType.ADMIN){
                 history.push('/admin')
-            } else if (userType === UserType.STUDENT){
+            } 
+            if (userType === UserType.STUDENT){
                 history.push('/student')
-            } else if (userType === UserType.TEACHER){
+            } 
+            if (userType === UserType.TEACHER){
                 history.push('/teacher')
             }
         }
@@ -64,7 +66,6 @@ const LoginPage = () => {
                             />
                         </FormGroup>
                     </div>
-
                 }
                 {
                     error && 

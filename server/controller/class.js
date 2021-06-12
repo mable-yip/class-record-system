@@ -6,8 +6,6 @@ import authenticateToken  from '../middleware/auth.js'
 
 const classRouter = express.Router();
 
-// TODO: change the verify token to be a middleware 
-
 // get all classes belongs to a teacher
 classRouter.get("/teacher/class", authenticateToken, async (request, response) => {
     try{
@@ -21,9 +19,8 @@ classRouter.get("/teacher/class", authenticateToken, async (request, response) =
 // get individual class
 classRouter.get("/teacher/class/:classId", authenticateToken, async (request, response) => {
     try{
-        const uid = request.params.classId
-        const result = await getCollection('class').findOne({_id: mongodb.ObjectId(uid)})
-        if (request.user.email !== result.teacherEmail) return response.status(403).send("Forbidden")
+        const classId = request.params.classId
+        const result = await getCollection('class').findOne({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email})
         response.status(200).send(result)
     } catch(error){
         console.log(error)
@@ -42,10 +39,11 @@ classRouter.post("/teacher/class", authenticateToken, async (request, response) 
 });
 
 // Update a class
-classRouter.patch("/teacher/class/:classId", async(request, response) => {
+classRouter.patch("/teacher/class/:classId", authenticateToken, async(request, response) => {
     try{
-        const uid = request.params.classId
-        await getCollection('class').findOneAndReplace({'_id': mongodb.ObjectId(uid)}, request.body)
+        const classId = request.params.classId
+        delete request.body._id
+        await getCollection('class').findOneAndUpdate({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email}, {$set: request.body}, {upsert: true})
         response.status(200).send({...request.body, "_id": request.params.classId})
     } catch(error){
         console.log(error)
@@ -56,11 +54,10 @@ classRouter.patch("/teacher/class/:classId", async(request, response) => {
 // delete a class from the database
 classRouter.delete("/teacher/class/:classId", authenticateToken, async (request, response) => {
     try{
-        const uid = request.params.classId
-        await getCollection('class').findOneAndDelete({'_id': mongodb.ObjectId(uid)})
-        response.send(uid)
+        const classId = request.params.classId
+        await getCollection('class').findOneAndDelete({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email})
+        response.send(classId)
     } catch(error){
-
         return response.status(500).send(error.response)
     }
 })

@@ -16,7 +16,7 @@ const StudentHomePage = () => {
 
     return (
         <div>
-            <NavbarComponent />
+
         </div>
 
     )

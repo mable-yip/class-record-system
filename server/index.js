@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import usersRouter from './controller/user.js'
 import classRouter from './controller/class.js'
+import apiErrorHandler from "./error/apiErrorHandler.js"
 
 const app = express();
 app.use(express.json({ limit: '30mb', extended: true }));
@@ -13,6 +14,7 @@ const PORT = 5000
 // Use the routes
 app.use('/', usersRouter);
 app.use('/', classRouter);
+app.use(apiErrorHandler);
 
 // Listen for connections
 app.listen(PORT);

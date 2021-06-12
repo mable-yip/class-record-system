@@ -1,4 +1,4 @@
-.classDetailPage {
+.createClassPage {
   width: 100%;
   max-width: 1500px;
   margin: auto;
@@ -8,8 +8,5 @@
 
 .container {
   display: flex;
-}
-
-.container > div {
-  flex: 1;
+  justify-content: space-between;
 }

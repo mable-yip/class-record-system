@@ -2,10 +2,9 @@ import { Modal, Table } from "react-bootstrap"
 import { useDispatch } from "react-redux";
 import { ClassModel, InputFormType } from "../../interface/models";
 import { deleteClassRequest } from "../../reducers/actionCreators";
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { ButtonLabel, Button } from "../common/styledComponents"
 import React, { useState } from "react";
-import InputClassForm from "./InputClassForm";
 
 
 interface Props { 
@@ -18,11 +17,8 @@ interface Props {
 //params
 const DisplayTable = (props: Props) => {
     const dispatch = useDispatch()
+    let history = useHistory()
     const listArray  = Object.values(props.classModelObj)
-    const [showEditClass, setShowEditClass] = useState(false)
-    const [selectedClass, setSelectedClass] = useState< ClassModel | undefined>(undefined)
-
-    console.log(selectedClass)
 
     const handleDelete = (classId: string) => {
         dispatch(deleteClassRequest({
@@ -31,18 +27,17 @@ const DisplayTable = (props: Props) => {
         }))
     }
 
-    const handleEdit = (classObj: ClassModel) => {
-        setSelectedClass(classObj)
-        setShowEditClass(true)
-    }
-
     return (
         <div>
             <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>Class Name</th>
-                        <th>Start</th>
+                        <th>Start Date</th>
+                        <th>Start Time</th>
+                        <th>Start End</th>
+                        <th>Frequency</th>
+                        <th> # of students</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -51,23 +46,23 @@ const DisplayTable = (props: Props) => {
                         listArray.map(classObj => 
                             <tr key={classObj._id}>
                                 <td> 
-                                    <Link to={`/teacher/${classObj._id}`}>
+                                    <Link to={`/teacher/class/info/${classObj._id}`}>
                                         {classObj.className}
                                     </Link> 
                                 </td>
                                 <td> {classObj.startDate} </td>
+                                <td> {classObj.repeat.startTime} </td>
+                                <td> {classObj.repeat.endTime} </td>
+                                <td> {classObj.repeat.cycle} </td>
+                                <td> {classObj.studentsEmail.length}</td>
                                 <td>
                                     <Button 
                                         bgColor="#1E90FF" 
                                         hoveredBgColor="#4169E1"
                                         borderColor= "#1E90FF"
                                         hoveredLabelColor="white"
-                                        onClick={() => handleEdit(classObj)}>
-                                        <ButtonLabel
-                                            color="white"
-                                        >
-                                            Edit
-                                        </ButtonLabel>
+                                        onClick={() => history.push(`/teacher/class/${classObj._id}`)}>
+                                        <ButtonLabel color="white"> Edit </ButtonLabel>
                                     </Button>         
                                     <Button 
                                         className="ml-3"
@@ -76,11 +71,7 @@ const DisplayTable = (props: Props) => {
                                         borderColor= "red"
                                         hoveredLabelColor="white"
                                         onClick={() => handleDelete(classObj._id)}>
-                                        <ButtonLabel
-                                            color="red"
-                                        >
-                                            Delete
-                                        </ButtonLabel>
+                                        <ButtonLabel color="red"> Delete </ButtonLabel>
                                     </Button>                            
                                 </td>
                             </tr>                        
@@ -88,21 +79,6 @@ const DisplayTable = (props: Props) => {
                     }
                 </tbody>
             </Table>
-
-            <Modal show={showEditClass} onHide={() => setShowEditClass(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title> Edit Class </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <InputClassForm 
-                            teacherEmail={props.email} 
-                            closeModal={()=>setShowEditClass(false)} 
-                            formType={InputFormType.EDIT}
-                            class={selectedClass}
-                        />
-                    </Modal.Body>
-                </Modal>
-                
         </div>
     )
 }

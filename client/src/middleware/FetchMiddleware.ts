@@ -57,9 +57,11 @@ export const FetchMiddleware = (store: any) => (next: any) => (action: AnyAction
           store.dispatch(actionSuccess(data))
         })
         .catch((error) => {
-          store.dispatch(actionFail(error)) // accpet string only
+          console.log("!!!", error.response.data)
+          store.dispatch(actionFail(error.response.data)) // accpet string only
         })
       } else {
+        console.log(action.payload.body)
         axios({
           method: method as Method,
           url: url,

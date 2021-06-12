@@ -4,11 +4,6 @@ import { loginFail, LoginFailReturnType, loginRequest, LoginSuccessReturnType, l
 import jwt_decode from 'jwt-decode';
 
 const initalState : AuthReducerState = {
-    firstName: null,
-    lastName: null,
-    email: null,
-    userType: null,
-    error: null,
     loading: false,
     signIn: false
 }
@@ -32,7 +27,6 @@ const authReducer = createReducer(initalState, {
     },
     [logout.type]: (state: AuthReducerState) => {
         state.signIn = false
-        state.userType= null
     }
 })
 

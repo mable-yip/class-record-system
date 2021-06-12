@@ -5,7 +5,6 @@ import { createClassFail, createClassFailReturnType, createClassSuccess, createC
 const initalState : TeacherReducerState = {
     loading: false,
     classList: {},
-    currentClass: null,
     studentList: {},
     error: null
 }
@@ -22,8 +21,8 @@ const teacherReducer = createReducer(initalState, {
             }
             }, {})
         state.classList = dataObj
-        state.currentClass = null
         state.loading = false
+        state.currentClass=undefined
     },
     [fetchClassesFail.type]: (state: TeacherReducerState, { payload } : fetchClassesFailReturnType) => {
         state.error = payload
@@ -42,12 +41,7 @@ const teacherReducer = createReducer(initalState, {
         state.error = payload
     },
     [updateClassSuccess.type]: (state: TeacherReducerState, { payload } : updateClassSuccessReturnType) => {
-        console.log(payload)
-        state.classList[payload._id].className = payload.className
-        state.classList[payload._id].repeat = payload.repeat
-        state.classList[payload._id].startDate = payload.startDate
-        state.classList[payload._id].studentsEmail = payload.studentsEmail
-        state.classList[payload._id].teacherEmail = payload.teacherEmail
+        state.classList[payload._id] = payload
     },
     [updateClassFail.type]: (state: TeacherReducerState, { payload } : updateClassFailReturnType) => {
         state.error = payload
