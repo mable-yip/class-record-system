@@ -21,7 +21,7 @@ const App = () =>{
     if (accessToken){
         dispatch(loginSuccess(accessToken))
     }
-}, [dispatch])
+}, [accessToken, dispatch])
 
   return (
     <div>
@@ -33,7 +33,7 @@ const App = () =>{
         <PrivateRoute path="/student" component={StudentHomePage} authenticationPath='./login' exact />
         <PrivateRoute path="/teacher/class" component={ClassForm} authenticationPath='./login' exact />
         <PrivateRoute path="/teacher/class/:classId" component={ClassForm} authenticationPath='./login' exact />
-        <PrivateRoute path="/teacher/class/info/:class_id" component={ClassDetail} authenticationPath='./login' exact />
+        <PrivateRoute path="/teacher/class/info/:classId" component={ClassDetail} authenticationPath='./login' exact />
         <Redirect to="/login"/>
       </Switch> 
     </div>

@@ -16,18 +16,6 @@ classRouter.get("/teacher/class", authenticateToken, async (request, response) =
     }
 })
 
-// get individual class
-classRouter.get("/teacher/class/:classId", authenticateToken, async (request, response) => {
-    try{
-        const classId = request.params.classId
-        const result = await getCollection('class').findOne({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email})
-        response.status(200).send(result)
-    } catch(error){
-        console.log(error)
-        response.status(500).send(error)
-    }
-})
-
 // Add a class to the database
 classRouter.post("/teacher/class", authenticateToken, async (request, response) => {
     try{
@@ -59,6 +47,36 @@ classRouter.delete("/teacher/class/:classId", authenticateToken, async (request,
         response.send(classId)
     } catch(error){
         return response.status(500).send(error.response)
+    }
+})
+
+
+// Get individual class and its students information
+classRouter.get("/teacher/class/:classId", async (request, response) => {
+    try{
+        const classId = request.params.classId
+        const result = await getCollection('class').aggregate([
+            { $match: { $and: [{ _id: mongodb.ObjectId(classId) }] }},
+            { 
+                $lookup: {
+                    from: "user",
+                    let: { studentsEmail: "$studentsEmail"}, 
+                    pipeline: [
+                        { 
+                            $match: {
+                                $expr: { $in: [ "$email", "$$studentsEmail"] }
+                            }
+                        },
+                        { $project : { "password": 0, "_id": 0} }
+                    ],
+                    as: "studentInfo"
+                }
+            }, { $project : { "_id": 0, "studentsEmail": 0} }
+        ]).toArray()
+        response.status(200).send(result[0])
+    } catch(error){
+        console.log(error)
+        response.status(500).send(error)
     }
 })
 

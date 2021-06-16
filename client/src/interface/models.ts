@@ -32,7 +32,7 @@ export interface Student {
 
 export type AdminInfo = Omit<Admin, "password"> 
 export type TeacherInfo = Omit<Teacher, "password"> 
-export type StudentInfo = Omit<Student, "_password"> 
+export type StudentInfo = Omit<Student, "password" | "_id"> 
 
 export interface AdminReducerState {
     loadingTeachers: boolean,
@@ -71,6 +71,14 @@ export interface ClassModel {
     repeat: Repeat
 }
 
+export interface ClassModelWithStudentInfo {
+    className: string 
+    teacherEmail: string
+    startDate: string
+    repeat: Repeat
+    studentInfo: StudentInfo[]
+}
+
 export type ClassModelPreview = Omit<ClassModel, "_id"> 
 
 export interface TeacherReducerState {
@@ -81,8 +89,7 @@ export interface TeacherReducerState {
     },
     studentList: {
         [email: string]: Student
-    },
-    currentClass?: ClassModelPreview
+    }
 }
 
 export interface AuthReducerState {
@@ -121,4 +128,16 @@ export interface BasicClassInfo {
     className: string 
     startDate: string
     repeat: Repeat
+}
+
+export interface UpdatedForm {
+    className?: string
+    startDate?: string
+    repeat?: {
+        cycle?: string,
+        startTime?: string,
+        endTime?: string
+    },
+    addedStudentEmail?: string[]
+    deletedStudentEmail?: string[]
 }

@@ -65,9 +65,7 @@ const ManagerUser = () => {
                                 hoveredLabelColor="white"
                                 onClick={handleShowCreateStudent}
                             > 
-                                <ButtonLabel color="white"> 
-                                    Add Student 
-                                </ButtonLabel>
+                                <ButtonLabel color="white">Add Student</ButtonLabel>
                             </Button>
                         </div>
                     </div>

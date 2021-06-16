@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../.."
-import { ClassModelPreview, Student, StudentInfo } from "../../interface/models"
+import { RootState } from "../../index"
+import { Student, StudentInfo } from "../../interface/models"
 import { fetchStudentsRequest } from "../../reducers/actionCreators"
 import { Button, ButtonLabel, Table, TableData, TableHead, Tr } from "../common/styledComponents"
 import "./searchStudent.css"
@@ -22,7 +22,7 @@ const SearchStudent = (props: Props) => {
 
     useEffect(() => {
         dispatch(fetchStudentsRequest({}))
-    }, [])
+    }, [dispatch])
 
     const searchStudents = (input: string) => {
         let matches = studentArray.filter((student) => {
@@ -32,7 +32,7 @@ const SearchStudent = (props: Props) => {
         setStudentMatch(matches)
     }
 
-    const handleAddStudent = (student: Student) => {
+    const handleAddStudent = (student: StudentInfo) => {
         console.log("student", student)
         console.log(seletcedStudents)
         if (seletcedStudents.some(selctedStudent => selctedStudent.email === student.email)){
@@ -58,6 +58,7 @@ const SearchStudent = (props: Props) => {
     }
 
     const handleSubmit = () => {
+        console.log(seletcedStudents)
         props.submit(seletcedStudents)
         props.closeModal()
     }
@@ -114,7 +115,7 @@ const SearchStudent = (props: Props) => {
                         </div>
                     ))
                 }
-                <button onClick={handleSubmit}> Confirm</button>
+                <button onClick={handleSubmit}>Confirm</button>
             </div>
         </div>
     )

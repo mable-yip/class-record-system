@@ -22,14 +22,10 @@ const teacherReducer = createReducer(initalState, {
             }, {})
         state.classList = dataObj
         state.loading = false
-        state.currentClass=undefined
     },
     [fetchClassesFail.type]: (state: TeacherReducerState, { payload } : fetchClassesFailReturnType) => {
         state.error = payload
         state.loading = false
-    },
-    [getClassSuccess.type]: (state: TeacherReducerState, { payload } : getClassSuccessReturnType) => {
-        state.currentClass = payload
     },
     [getClassFail.type]: (state: TeacherReducerState, { payload } : getClassFailReturnType) => {
         state.error = payload

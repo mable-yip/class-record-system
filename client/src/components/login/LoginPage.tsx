@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Button, Form, FormGroup } from 'react-bootstrap';
+import { Button, Form, FormGroup } from 'react-bootstrap';
 import './LoginPage.css'
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserType } from '../../interface/models';
 import { RootState } from '../..';
 import { loginRequest } from '../../reducers/actionCreators';
+import ErrorMessage from '../common/ErrorMessage';
+import DataTable from '../common/DataTable';
 
 const LoginPage = () => {
     const [signinInfo, setSigninInfo] = useState({ email:"", password:""})
@@ -67,19 +69,12 @@ const LoginPage = () => {
                         </FormGroup>
                     </div>
                 }
-                {
-                    error && 
-                    <Alert variant='danger'>
-                        {error}
-                    </Alert>
-                }
-                <Button
-                    className="btn-lg btn-dark btn-block"
-                    onClick={() => handleLogin()}
-                >
+                <ErrorMessage errorMessage={error}/>
+                <Button className="btn-lg btn-dark btn-block" onClick={handleLogin}>
                     Log in
                 </Button>
             </Form>
+            <DataTable headers={["Name", "email", "action"]}/>
         </div>
     )
 }

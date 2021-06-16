@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { APIRequestInput, ClassModel, ClassModelPreview, SignInInfo, Student, Teacher } from '../interface/models'
+import { APIRequestInput, ClassModel, ClassModelPreview, ClassModelWithStudentInfo, SignInInfo, Student, Teacher, UpdatedForm } from '../interface/models'
 
 // auth
 export const loginRequest = createAction<APIRequestInput<SignInInfo>>('LOGIN_REQUEST')
@@ -43,7 +43,7 @@ export type fetchClassesSuccessReturnType = ReturnType<typeof fetchClassesSucces
 export type fetchClassesFailReturnType = ReturnType<typeof fetchClassesFail>
 
 export const getClassRequest = createAction<APIRequestInput<null>>('GET_CLASS_REQUEST')
-export const getClassSuccess = createAction<ClassModelPreview>('GET_CLASS_SUCCESS')
+export const getClassSuccess = createAction<ClassModelWithStudentInfo>('GET_CLASS_SUCCESS')
 export const getClassFail = createAction<string>('GET_CLASS_FAIL')
 export type getClassSuccessReturnType = ReturnType<typeof getClassSuccess>
 export type getClassFailReturnType = ReturnType<typeof getClassFail>
@@ -54,7 +54,7 @@ export const createClassFail = createAction<string>('CREATE_CLASS_FAIL')
 export type createClassSuccessReturnType = ReturnType<typeof createClassSuccess>
 export type createClassFailReturnType = ReturnType<typeof createClassFail>
 
-export const updateClassRequest = createAction<APIRequestInput<ClassModelPreview>>('UPDATE_CLASS_REQUEST')
+export const updateClassRequest = createAction<APIRequestInput<UpdatedForm>>('UPDATE_CLASS_REQUEST')
 export const updateClassSuccess = createAction<ClassModel>('UPDATE_CLASS_SUCCESS')
 export const updateClassFail = createAction<string>('UPDATE_CLASS_FAIL')
 export type updateClassSuccessReturnType = ReturnType<typeof updateClassSuccess>
