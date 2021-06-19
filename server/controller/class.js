@@ -7,7 +7,7 @@ import authenticateToken  from '../middleware/auth.js'
 const classRouter = express.Router();
 
 // get all classes belongs to a teacher
-classRouter.get("/teacher/class", authenticateToken, async (request, response) => {
+classRouter.get("/teacher/classes", authenticateToken, async (request, response) => {
     try{
         const result = await getCollection('class').find({ teacherEmail: request.user.email}).toArray()
         response.status(200).send(result)
@@ -17,7 +17,7 @@ classRouter.get("/teacher/class", authenticateToken, async (request, response) =
 })
 
 // Add a class to the database
-classRouter.post("/teacher/class", authenticateToken, async (request, response) => {
+classRouter.post("/teacher/classes", authenticateToken, async (request, response) => {
     try{
         const result = await getCollection('class').insertOne(request.body)
         response.status(200).send(result.ops[0])
@@ -27,12 +27,23 @@ classRouter.post("/teacher/class", authenticateToken, async (request, response) 
 });
 
 // Update a class
-classRouter.patch("/teacher/class/:classId", authenticateToken, async(request, response) => {
+classRouter.patch("/teacher/classes/:classId", authenticateToken, async(request, response) => {
     try{
         const classId = request.params.classId
-        delete request.body._id
-        await getCollection('class').findOneAndUpdate({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email}, {$set: request.body}, {upsert: true})
-        response.status(200).send({...request.body, "_id": request.params.classId})
+        const updatedFields = request.body
+
+        console.log("before", updatedFields)
+
+        const addedStudentEmails = updatedFields.addedStudentEmail
+        const deletedStudentEmails = updatedFields.deletedStudentEmail
+        delete updatedFields.addedStudentEmail
+        delete updatedFields.deletedStudentEmail
+
+        console.log("after", updatedFields)
+
+        const updatedDoc = await getCollection('class').findOneAndUpdate({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email}, {$set: updatedFields}, {returnNewDocument: true})
+        console.log(updatedDoc)
+        response.status(200).send(updatedDoc)
     } catch(error){
         console.log(error)
         return response.status(500).send(error.response)
@@ -40,7 +51,7 @@ classRouter.patch("/teacher/class/:classId", authenticateToken, async(request, r
 }) 
 
 // delete a class from the database
-classRouter.delete("/teacher/class/:classId", authenticateToken, async (request, response) => {
+classRouter.delete("/teacher/classes/:classId", authenticateToken, async (request, response) => {
     try{
         const classId = request.params.classId
         await getCollection('class').findOneAndDelete({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email})
@@ -52,11 +63,11 @@ classRouter.delete("/teacher/class/:classId", authenticateToken, async (request,
 
 
 // Get individual class and its students information
-classRouter.get("/teacher/class/:classId", async (request, response) => {
+classRouter.get("/teacher/classes/:classId", async (request, response) => {
     try{
         const classId = request.params.classId
         const result = await getCollection('class').aggregate([
-            { $match: { $and: [{ _id: mongodb.ObjectId(classId) }] }},
+            { $match: { _id: mongodb.ObjectId(classId)}},
             { 
                 $lookup: {
                     from: "user",

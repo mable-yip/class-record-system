@@ -7,7 +7,6 @@ import ManagerUser from './admin/ManageUser';
 import NavBarComponent from './common/NavBarComponent';
 import LoginPage from './login/LoginPage'
 import StudentHomePage from './student/StudentHomePage';
-import ClassDetail from './teacher/ClassDetail';
 import ManageClass from './teacher/ManageClass';
 import ClassForm from "./teacher/ClassForm";
 import PrivateRoute from './route/PrivateRoute';
@@ -33,7 +32,6 @@ const App = () =>{
         <PrivateRoute path="/student" component={StudentHomePage} authenticationPath='./login' exact />
         <PrivateRoute path="/teacher/class" component={ClassForm} authenticationPath='./login' exact />
         <PrivateRoute path="/teacher/class/:classId" component={ClassForm} authenticationPath='./login' exact />
-        <PrivateRoute path="/teacher/class/info/:classId" component={ClassDetail} authenticationPath='./login' exact />
         <Redirect to="/login"/>
       </Switch> 
     </div>

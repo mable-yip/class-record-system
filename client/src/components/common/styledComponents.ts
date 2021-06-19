@@ -25,29 +25,3 @@ export const Button = styled.button<{bgColor: string, hoveredBgColor: string, bo
         }
     }
 `
-
-export const Table = styled.table<{}>`
-    width: 100%;
-    border-collapse: collapse;
-    font-family: Arial, Helvetica, sans-serif;
-`
-
-export const TableHead = styled.thead<{}>`
-    text-align: left;
-    border: 1px solid #ddd;
-`
-
-export const TableData = styled.td<{}>`
-    border: 1px solid #ddd;
-    text-align: left;
-    padding: 8px;
-`;
-
-export const Tr = styled.tr<{}>`
-    &:nth-child(even){
-        background-color: #f2f2f2;
-    }
-    &:hover {
-        background-color: #ddd;
-    }
-`

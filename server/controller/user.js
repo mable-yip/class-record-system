@@ -30,7 +30,7 @@ usersRouter.post("/login", async (request, response, next) => {
 });
 
 
-usersRouter.get("/user/:email", authenticateToken, async (req, res)=>{
+usersRouter.get("/users/:email", authenticateToken, async (req, res)=>{
     const user = await getCollection('user').findOne({ email: req.params.email})
     if (user == null) return next(ApiError.badRequest("cannot find user"))
     res.status(200).send(user)
@@ -39,7 +39,7 @@ usersRouter.get("/user/:email", authenticateToken, async (req, res)=>{
 /**
  * Handles a POST request to create a user
  */
-usersRouter.post("/admin/user", authenticateToken, async (request, response, next) => {
+usersRouter.post("/admin/users", authenticateToken, async (request, response, next) => {
 
     const existingUser = await getCollection('user').findOne({ email: request.body.email})
     if(existingUser) return next(ApiError.badRequest("User already exist"))
@@ -59,7 +59,7 @@ usersRouter.post("/admin/user", authenticateToken, async (request, response, nex
 /**
  * Handles a DELETE request to delete a user
  */
-usersRouter.delete("/admin/user/:email", authenticateToken, async (request, response) => {
+usersRouter.delete("/admin/users/:email", authenticateToken, async (request, response) => {
     try {
         const user = await getCollection('user').findOne({ email: request.params.email})
         await getCollection('user').deleteOne({ "email" : request.params.email })
@@ -72,7 +72,7 @@ usersRouter.delete("/admin/user/:email", authenticateToken, async (request, resp
 /**
  * Handle a GET request to get all the teachers in the database 
  */
-usersRouter.get("/admin/allTeachers", authenticateToken, async (request, response) => {
+usersRouter.get("/admin/all-teachers", authenticateToken, async (request, response) => {
     try{
         const result = await getCollection('user').find({ userType: "teacher"}, { password: 0}).toArray()
         response.status(200).send(result)
@@ -84,25 +84,11 @@ usersRouter.get("/admin/allTeachers", authenticateToken, async (request, respons
 /**
  * Handle a GET request to get all the students in the database 
  */
-usersRouter.get("/admin/allStudents", authenticateToken, async (request, response) => {
+usersRouter.get("/admin/all-students", authenticateToken, async (request, response) => {
     try{
         const results = await getCollection('user').find({ userType: "student"}).project({ password: 0}).toArray()
         response.status(200).send(results)
     } catch(error){
-        response.status(500).send(error)
-    }
-})
-
-/**
- * Handle a GET request to get all the students in the database 
- */
- usersRouter.post("/studentsByemails", async (request, response) => {
-    try{
-        const studentemails = request.body.studentemails
-        const results = await getCollection('user').find({ email: {$in: studentemails}}).project({ password: 0}).toArray()
-        response.status(200).send(results)
-    } catch(error){
-        console.log(error)
         response.status(500).send(error)
     }
 })

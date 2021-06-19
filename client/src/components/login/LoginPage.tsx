@@ -7,7 +7,6 @@ import { UserType } from '../../interface/models';
 import { RootState } from '../..';
 import { loginRequest } from '../../reducers/actionCreators';
 import ErrorMessage from '../common/ErrorMessage';
-import DataTable from '../common/DataTable';
 
 const LoginPage = () => {
     const [signinInfo, setSigninInfo] = useState({ email:"", password:""})
@@ -74,7 +73,6 @@ const LoginPage = () => {
                     Log in
                 </Button>
             </Form>
-            <DataTable headers={["Name", "email", "action"]}/>
         </div>
     )
 }

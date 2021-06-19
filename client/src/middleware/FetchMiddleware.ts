@@ -25,15 +25,15 @@ const actionMap = {
 // API method, url, isTokenRequired
 const apiCallMap = {
   [loginRequest.type]: [ APIMethod.POST, "login", false],
-  [fetchTeachersRequest.type]: [ APIMethod.GET, "admin/allTeachers", true ], // assuming the params is at the end of the url
-  [fetchStudentsRequest.type]: [ APIMethod.GET, "admin/allStudents", true ],
-  [createUserRequest.type]: [ APIMethod.POST, "admin/user", true],
-  [deleteUserRequest.type]: [ APIMethod.DELETE, "admin/user/", true],
-  [fetchClassesRequest.type]: [ APIMethod.GET, "teacher/class", true],
-  [getClassRequest.type]: [ APIMethod.GET, "teacher/class/", true],
-  [createClassRequest.type]: [ APIMethod.POST, "teacher/class", true],
-  [updateClassRequest.type]: [ APIMethod.PATCH, "teacher/class/", true],
-  [deleteClassRequest.type]: [ APIMethod.DELETE, "teacher/class/", true],
+  [fetchTeachersRequest.type]: [ APIMethod.GET, "admin/all-teachers", true ], // assuming the params is at the end of the url
+  [fetchStudentsRequest.type]: [ APIMethod.GET, "admin/all-students", true ],
+  [createUserRequest.type]: [ APIMethod.POST, "admin/users", true],
+  [deleteUserRequest.type]: [ APIMethod.DELETE, "admin/users/", true],
+  [fetchClassesRequest.type]: [ APIMethod.GET, "teacher/classes", true],
+  [getClassRequest.type]: [ APIMethod.GET, "teacher/classes/", true],
+  [createClassRequest.type]: [ APIMethod.POST, "teacher/classes", true],
+  [updateClassRequest.type]: [ APIMethod.PATCH, "teacher/classes/", true],
+  [deleteClassRequest.type]: [ APIMethod.DELETE, "teacher/classes/", true],
 }
 
 export const FetchMiddleware = (store: any) => (next: any) => (action: AnyAction) => {  

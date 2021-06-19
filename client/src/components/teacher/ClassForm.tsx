@@ -1,14 +1,15 @@
 import { RootState } from "../.."
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { ClassModelWithStudentInfo, CycleType, StudentInfo, UpdatedForm } from "../../interface/models"
 import "./classForm.css"
 import React, { useEffect, useState } from "react"
-import { Button, ButtonLabel, Table, TableData, TableHead, Tr } from "../common/styledComponents"
+import { Button, ButtonLabel } from "../common/styledComponents"
 import { Form, FormGroup, Modal } from "react-bootstrap"
 import SearchStudent from "./SearchStudent"
 import { useHistory, useParams } from "react-router-dom"
 import { createClassRequest, updateClassRequest } from "../../reducers/actionCreators"
 import axios from "axios"
+import DataTable from "../common/DataTable"
 
 const url = 'http://localhost:5000';
 axios.defaults.baseURL = url
@@ -17,8 +18,8 @@ interface ParamTypes {
     classId?: string
 }
 
-
 const ClassForm = () => {
+    const dispatch = useDispatch()
     const history = useHistory()
     const { classId } = useParams<ParamTypes>()
     const { email } = useSelector((state: RootState) => state.auth)
@@ -35,62 +36,52 @@ const ClassForm = () => {
         studentInfo: []
     }
 
+    const [classInfo, setClassInfo] = useState<ClassModelWithStudentInfo>(newClassForm)
+    const [updatedForm, setUpdatedForm] = useState<UpdatedForm>({})
+    const [updateMode, setUpdateMode] = useState<boolean>(false)
+
     useEffect(() => {
         axios({
             method: 'get',
-            url: `/teacher/class/${classId}`
+            url: `/teacher/classes/${classId}`
           }).then(({data}) => {
-            setForm(data)
+            setClassInfo(data)
           }, (error) => {
             console.log(error);
           });
     }, [classId])
 
-    const [form, setForm] = useState<ClassModelWithStudentInfo>(newClassForm)
-    const [updatedForm, setUpdatedForm] = useState<UpdatedForm>({})
-    const [showSearchStudent, setShowSearchStudent] = useState(false)
-
     const handleOnChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value
-        setForm({...form, [key]: newValue})
+        setClassInfo({...classInfo, [key]: newValue})
         setUpdatedForm({...updatedForm, [key]: newValue})
     }
     console.log(updatedForm)
 
-    const handleCallback = (studentList: StudentInfo[]) => {
-        const addedStudents = studentList.filter((student) => {
-            return !form.studentInfo.some((formStudent) => {
-                return student.email === formStudent.email;
-            });
-        });
-        const addedStudentEmails : string[] = addedStudents.map(student => student.email)
-
-        const deletedStudents = form.studentInfo.filter((formStudent) => {
-            return !studentList.some((student) => {
-                return formStudent.email === student.email;
-            });
-        });
-        const deletedStudentEmails : string[] = deletedStudents.map(student => student.email)
-
-        setUpdatedForm({...updatedForm, addedStudentEmail: addedStudentEmails, deletedStudentEmail: deletedStudentEmails})
-        setForm({...form, studentInfo: studentList})
+    const handleAddStudent = (student: StudentInfo) => {
+        if (!classInfo.studentInfo.some(selctedStudent => selctedStudent.email === student.email)){
+            setClassInfo({...classInfo, studentInfo: [...classInfo.studentInfo, student]})
+            const addedStudentEmails = updatedForm.addedStudentEmail || []
+            addedStudentEmails.push(student.email)
+            setUpdatedForm({...updatedForm, addedStudentEmail: addedStudentEmails})
+        }
     }
 
     const handleRemoveStudent = (email: string) => {
-        const newStudentInfo = form.studentInfo.filter(student => student.email !== email)
-        setForm({...form, studentInfo: newStudentInfo})
-        const deletedStudentEmails = updatedForm?.deletedStudentEmail? updatedForm.deletedStudentEmail : []
-        deletedStudentEmails?.push(email)
+        const newStudentInfo = classInfo.studentInfo.filter(student => student.email !== email)
+        setClassInfo({...classInfo, studentInfo: newStudentInfo})
+        const deletedStudentEmails = updatedForm.deletedStudentEmail || []
+        deletedStudentEmails.push(email)
         setUpdatedForm({...updatedForm, deletedStudentEmail: deletedStudentEmails})
     }
 
     const handleSubmit = () => {
         if (classId){
             console.log("!!!!!!!!!!!", updatedForm)
-            // dispatch(updateClassRequest({
-            //     body: updatedForm,
-            //     params: classId
-            // }))
+            dispatch(updateClassRequest({
+                body: updatedForm,
+                params: classId
+            }))
         } else{ // create new class
             // dispatch(createClassRequest({
             //     body: form
@@ -99,111 +90,119 @@ const ClassForm = () => {
         history.push('/teacher')
     }
 
+    const renderHeaders = () => {
+        const headers = updateMode ?  ["Email", "First Name", "Last Name", "Actions"] : ["Email", "First Name", "Last Name"]
+        return (
+            headers.map(header => 
+                <th key={header}> {header} </th>)
+        )
+    }
+
     return(
-        <>
-            <div className="createClassPage">
-                <h1> {classId?"Update":"Create"} Class</h1>
-                <div className="container mt-5">
-                    <div className="mr-3">
-                        <h2> Class Detail</h2>
-                        <Form>
-                            <FormGroup>
-                                <Form.Label>Class Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Class Name"
-                                    value={form.className}
-                                    onChange={handleOnChange("className")}
-                                />
-                            </FormGroup>
+        <div className="createClassPage">
+            <div className="row">
+                <Button
+                    bgColor="#1E90FF"
+                    hoveredBgColor="#4169E1"
+                    borderColor= "#1E90FF"
+                    hoveredLabelColor="white"
+                    onClick={() => setUpdateMode(!updateMode)}
+                >
+                    <ButtonLabel color="white"> {updateMode?"Cancel":"Edit Class"} </ButtonLabel>
+                </Button>
+            </div>
 
-                            <FormGroup>
-                                <Form.Label>Start date</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    placeholder="Start date"
-                                    value={form.startDate}
-                                    onChange={handleOnChange("startDate")}
-                                />
-                            </FormGroup>
+            <div className="container mt-5">
+                <div className="mr-3">
+                    <h2> Class Detail</h2>
+                    <Form>
+                        <FormGroup>
+                            <Form.Label>Class Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Class Name"
+                                value={classInfo.className}
+                                onChange={handleOnChange("className")}
+                                disabled={!updateMode}
+                            />
+                        </FormGroup>
 
-                            <FormGroup>
-                                <Form.Label>Start time</Form.Label>
-                                <Form.Control
-                                    type="time"
-                                    placeholder="Start time"
-                                    value={form.repeat.startTime}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                            setForm({...form, repeat: {...form.repeat, startTime: event.target.value}})
-                                            setUpdatedForm({...updatedForm, repeat: {...updatedForm.repeat, startTime: event.target.value}})
-                                        }
+                        <FormGroup>
+                            <Form.Label>Start date</Form.Label>
+                            <Form.Control
+                                type="date"
+                                placeholder="Start date"
+                                value={classInfo.startDate}
+                                onChange={handleOnChange("startDate")}
+                                disabled={!updateMode}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Form.Label>Start time</Form.Label>
+                            <Form.Control
+                                type="time"
+                                placeholder="Start time"
+                                value={classInfo.repeat.startTime}
+                                disabled={!updateMode}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setClassInfo({...classInfo, repeat: {...classInfo.repeat, startTime: event.target.value}})
+                                        setUpdatedForm({...updatedForm, repeat: {...updatedForm.repeat, startTime: event.target.value}})
                                     }
-                                />
-                            </FormGroup>
+                                }
+                            />
+                        </FormGroup>
 
-                            <FormGroup>
-                                <Form.Label>End time</Form.Label>
-                                <Form.Control
-                                    type="time"
-                                    placeholder="End time"
-                                    value={form.repeat.endTime}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                            setForm({...form, repeat: {...form.repeat, endTime: event.target.value}})
-                                            setUpdatedForm({...updatedForm, repeat: {...updatedForm.repeat, endTime: event.target.value}})
-                                        }
+                        <FormGroup>
+                            <Form.Label>End time</Form.Label>
+                            <Form.Control
+                                type="time"
+                                placeholder="End time"
+                                value={classInfo.repeat.endTime}
+                                disabled={!updateMode}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setClassInfo({...classInfo, repeat: {...classInfo.repeat, endTime: event.target.value}})
+                                        setUpdatedForm({...updatedForm, repeat: {...updatedForm.repeat, endTime: event.target.value}})
                                     }
-                                />
-                            </FormGroup>
+                                }
+                            />
+                        </FormGroup>
 
-                            <FormGroup>
-                                <Form.Label>Cycle</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    value={form.repeat.cycle}
-                                    onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                                            setForm({...form, repeat: {...form.repeat, cycle: event.target.value}})
-                                            setUpdatedForm({...updatedForm, repeat: {...updatedForm.repeat, cycle: event.target.value}})
-                                        }
+                        <FormGroup>
+                            <Form.Label>Cycle</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={classInfo.repeat.cycle}
+                                disabled={!updateMode}
+                                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                                        setClassInfo({...classInfo, repeat: {...classInfo.repeat, cycle: event.target.value}})
+                                        setUpdatedForm({...updatedForm, repeat: {...updatedForm.repeat, cycle: event.target.value}})
                                     }
-                                >
-                                    <option> {CycleType.DAILY} </option>
-                                    <option> {CycleType.WEEKLY} </option>
-                                    <option> {CycleType.FORNIGHTLY} </option>
-                                    <option> {CycleType.MONTHLY} </option>
-                                </Form.Control>
-                            </FormGroup>
-                        </Form>
-                    </div>
-
-                    <div>
-                        <div className="row">
-                            <h2> Student List </h2>
-                            <Button
-                                className="ml-3"
-                                bgColor="#1E90FF"
-                                hoveredBgColor="#4169E1"
-                                borderColor= "#1E90FF"
-                                hoveredLabelColor="white"
-                                onClick={() => setShowSearchStudent(true)}
+                                }
                             >
-                                <ButtonLabel color="white"> Add Student </ButtonLabel>
-                            </Button>
-                        </div>
-                        <Table>
-                            <TableHead>
-                                <th>Email</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Action</th>
-                            </TableHead>
-                            <tbody>
-                                {
-                                    form.studentInfo.map(student =>
-                                        <Tr key={student.email}>
-                                        <TableData> {student.email} </TableData>
-                                        <TableData> {student.firstName} </TableData>
-                                        <TableData> {student.lastName} </TableData>
-                                        <TableData>
+                                <option> {CycleType.DAILY} </option>
+                                <option> {CycleType.WEEKLY} </option>
+                                <option> {CycleType.FORNIGHTLY} </option>
+                                <option> {CycleType.MONTHLY} </option>
+                            </Form.Control>
+                        </FormGroup>
+                    </Form>
+                </div>
+
+                <div>
+                    <h2> Student List </h2>
+                    { updateMode && <SearchStudent handleAddStudent={handleAddStudent}/> }
+                    <div className="studentList">
+                        <DataTable 
+                            headers={renderHeaders}
+                            body={() => classInfo.studentInfo.map(student => 
+                                <tr key={student.email}>
+                                    <td> {student.email} </td>
+                                    <td> {student.firstName} </td>
+                                    <td> {student.lastName} </td>
+                                    {
+                                        updateMode &&
+                                        <td>
                                             <Button
                                                 onClick={()=>handleRemoveStudent(student.email)}
                                                 bgColor="white"
@@ -213,26 +212,27 @@ const ClassForm = () => {
                                             >
                                                 <ButtonLabel color="red"> Delete </ButtonLabel>
                                             </Button>
-                                        </TableData>
-                                    </Tr>
-                                    )
-                                }
-                            </tbody>
-                        </Table>
+                                        </td>
+                                    }
+                                </tr>)
+                            }
+                        />
                     </div>
                 </div>
+            </div>
 
-                <div className="container">
-                    <Button
-                        bgColor="#1E90FF"
-                        hoveredBgColor="#4169E1"
-                        borderColor= "#1E90FF"
-                        hoveredLabelColor="white"
-                        onClick={() => history.push('/teacher') }
-                    >
-                        <ButtonLabel color="white"> Back </ButtonLabel>
-                    </Button>
-
+            <div className="container">
+                <Button
+                    bgColor="#1E90FF"
+                    hoveredBgColor="#4169E1"
+                    borderColor= "#1E90FF"
+                    hoveredLabelColor="white"
+                    onClick={() => history.push('/teacher') }
+                >
+                    <ButtonLabel color="white"> Back </ButtonLabel>
+                </Button>
+                {
+                    updateMode && 
                     <Button
                         bgColor="#1E90FF"
                         hoveredBgColor="#4169E1"
@@ -242,22 +242,9 @@ const ClassForm = () => {
                     >
                         <ButtonLabel color="white"> {classId?"Update":"Create"} </ButtonLabel>
                     </Button>
-                </div>
+                }
             </div>
-
-            <Modal size="lg" show={showSearchStudent} onHide={() => setShowSearchStudent(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title> Add Students to Class </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <SearchStudent selectedStudents={form.studentInfo} submit={handleCallback} closeModal={()=>setShowSearchStudent(false)}/>
-                </Modal.Body>
-            </Modal>
-        </>
+        </div>
     )
 }
 export default ClassForm
-
-function dispatch(arg0: { payload: import("../../interface/models").APIRequestInput<import("../../interface/models").ClassModelPreview>; type: string }) {
-    throw new Error("Function not implemented.")
-}

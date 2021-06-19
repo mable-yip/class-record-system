@@ -1,24 +1,30 @@
 .resizedTextbox {
-  width: 350px;
+  width: 398px;
   height: 30px;
+  margin-bottom: 10px;
 }
 
 .cardContainer {
-  padding: 2px 16px;
-}
-
-.card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   width: 350px;
+  padding: 2px 16px;
+  background-color: white;
 }
 
 .cardContainer:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  background-color: lightgray;
 }
 
-.container {
-  display: flex;
-  justify-content: space-between;
-  height: 600px;
+.selectedcardContainer {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 350px;
+  padding: 2px 16px;
+  background-color: lightgray;
+}
+
+.dropDown {
+  z-index: 1;
+  position: fixed;
 }

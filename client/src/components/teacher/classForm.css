@@ -2,11 +2,18 @@
   width: 100%;
   max-width: 1500px;
   margin: auto;
-  margin-bottom: 40px;
   margin-top: 20px;
 }
 
 .container {
   display: flex;
   justify-content: space-between;
+}
+
+.container > div {
+  flex: 1;
+}
+
+.studentList {
+  position: absolute;
 }

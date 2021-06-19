@@ -2,12 +2,12 @@ import { UserType } from '../../interface/models'
 import { Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import DisplayTable from './DisplayTable';
 import InputUserForm from './InputUserForm';
 import { RootState } from '../../index';
-import { fetchStudentsRequest, fetchTeachersRequest } from '../../reducers/actionCreators';
+import { deleteUserRequest, fetchStudentsRequest, fetchTeachersRequest } from '../../reducers/actionCreators';
 import { Button, ButtonLabel } from '../common/styledComponents';
 import "./manageUser.css"
+import DataTable from '../common/DataTable';
 
 const ManagerUser = () => {
     const dispatch = useDispatch()
@@ -21,11 +21,19 @@ const ManagerUser = () => {
     const handleShowCreateStudent = () => setShowCreatetudent(true)
     const handleCloseCreateStudent = () => setShowCreatetudent(false)
 
+    const handleDeleteUser = (email: string) => {
+        dispatch(deleteUserRequest({
+            body: null,
+            params: email
+        }))
+    }
 
     useEffect(() => {
         dispatch(fetchTeachersRequest({}))
         dispatch(fetchStudentsRequest({}))
     }, [dispatch])
+
+    const headers = ["Email", "First Name", "Last Name", "Action"]
 
     return (
         <div>
@@ -49,7 +57,30 @@ const ManagerUser = () => {
                             </Button>
                         </div>
                     </div>
-                    <DisplayTable list={teacherList} userType={UserType.TEACHER}/>
+
+                    <DataTable 
+                        headers={() => headers.map(header => 
+                            <th key={header}> {header} </th>)
+                        }
+                        body={() => Object.values(teacherList).map(teacher => 
+                            <tr key={teacher.email}>
+                                <td> {teacher.email} </td>
+                                <td> {teacher.firstName} </td>
+                                <td> {teacher.lastName} </td>
+                                <td> 
+                                    <Button 
+                                        bgColor="white" 
+                                        hoveredBgColor="red"
+                                        borderColor= "red"
+                                        hoveredLabelColor="white"
+                                        onClick={() => handleDeleteUser(teacher.email)}
+                                    > 
+                                        <ButtonLabel color="red"> Delete </ButtonLabel>
+                                    </Button>
+                                </td>
+                            </tr>)
+                        }
+                    />
                 </div>
 
                 <div className="mt-3 ml-3">
@@ -69,7 +100,30 @@ const ManagerUser = () => {
                             </Button>
                         </div>
                     </div>
-                    <DisplayTable list={studentList} userType={UserType.STUDENT}/>
+                    
+                    <DataTable 
+                        headers={() => headers.map(header => 
+                            <th key={header}> {header} </th>)
+                        }
+                        body={() => Object.values(studentList).map(student => 
+                            <tr key={student.email}>
+                                <td> {student.email} </td>
+                                <td> {student.firstName} </td>
+                                <td> {student.lastName} </td>
+                                <td> 
+                                    <Button 
+                                        bgColor="white" 
+                                        hoveredBgColor="red"
+                                        borderColor= "red"
+                                        hoveredLabelColor="white"
+                                        onClick={() => handleDeleteUser(student.email)}
+                                    > 
+                                        <ButtonLabel color="red"> Delete </ButtonLabel>
+                                    </Button>
+                                </td>
+                            </tr>)
+                        }
+                    />
                 </div>
             </div>
 
