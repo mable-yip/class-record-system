@@ -20,6 +20,7 @@ const LoginPage = () => {
     }
 
     useEffect(()=>{
+        console.log("LoginIn Page", signIn)
         if(signIn){
             if(userType === UserType.ADMIN){
                 history.push('/admin')
@@ -28,7 +29,7 @@ const LoginPage = () => {
                 history.push('/student')
             } 
             if (userType === UserType.TEACHER){
-                history.push('/teacher')
+                history.push('/teacher/classes')
             }
         }
     }, [signIn])

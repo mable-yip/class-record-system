@@ -1,19 +1,22 @@
-.createClassPage {
+.classFormBody {
+  display: flex;
+  margin: auto;
   width: 100%;
   max-width: 1500px;
-  margin: auto;
-  margin-top: 20px;
-}
-
-.container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.container > div {
-  flex: 1;
+  justify-content: space-evenly;
+  align-items: stretch;
 }
 
 .studentList {
+  width: 100%;
+  max-width: 500px;
   position: absolute;
+}
+
+.buttons {
+  margin: auto;
+  width: 100%;
+  max-width: 1500px;
+  display: flex;
+  justify-content: space-between;
 }

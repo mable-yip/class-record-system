@@ -1,6 +1,4 @@
 import "./dataTable.css"
-import { Button, ButtonLabel } from "./styledComponents"
-
 
 const DataTable = (props: {headers: () => JSX.Element[], body?: () => JSX.Element[]}) => {
     return(
@@ -9,7 +7,7 @@ const DataTable = (props: {headers: () => JSX.Element[], body?: () => JSX.Elemen
                 {props.headers()}
             </thead>
             <tbody>
-                {props.body&&props.body()}
+                {props.body && props.body()}
             </tbody>
         </table>
     )

@@ -23,7 +23,7 @@ export const StoreMiddleware = (store: any) => (next: any) => (action: AnyAction
     if(action.type === "LOGIN_SUCCESS"){
       localStorage.setItem('profile', action.payload)
     } else if(action.type === "LOGOUT"){
-      localStorage.clear()
+      localStorage.removeItem('profile')
     }
     next(action)
   }

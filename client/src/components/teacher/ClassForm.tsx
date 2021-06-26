@@ -1,10 +1,10 @@
 import { RootState } from "../.."
 import { useDispatch, useSelector } from "react-redux"
-import { ClassModelWithStudentInfo, CycleType, StudentInfo, UpdatedForm } from "../../interface/models"
-import "./classForm.css"
+import { ClassModelPreview, ClassModelWithStudentInfo, CycleType, StudentInfo, UpdatedForm } from "../../interface/models"
+import './classForm.css'
 import React, { useEffect, useState } from "react"
 import { Button, ButtonLabel } from "../common/styledComponents"
-import { Form, FormGroup, Modal } from "react-bootstrap"
+import { Form, FormGroup } from "react-bootstrap"
 import SearchStudent from "./SearchStudent"
 import { useHistory, useParams } from "react-router-dom"
 import { createClassRequest, updateClassRequest } from "../../reducers/actionCreators"
@@ -36,19 +36,26 @@ const ClassForm = () => {
         studentInfo: []
     }
 
+    const [oldClassInfo, setOldClassInfo] = useState<ClassModelWithStudentInfo>(newClassForm)
     const [classInfo, setClassInfo] = useState<ClassModelWithStudentInfo>(newClassForm)
     const [updatedForm, setUpdatedForm] = useState<UpdatedForm>({})
-    const [updateMode, setUpdateMode] = useState<boolean>(false)
+    const [updateMode, setUpdateMode] = useState<boolean>(classId?false:true)
 
     useEffect(() => {
-        axios({
-            method: 'get',
-            url: `/teacher/classes/${classId}`
-          }).then(({data}) => {
-            setClassInfo(data)
-          }, (error) => {
-            console.log(error);
-          });
+        if(classId){
+            axios({
+                method: 'get',
+                url: `/teacher/classes/${classId}`
+              }).then(({data} : {data: ClassModelWithStudentInfo}) => {
+                    console.log(data)
+                    setClassInfo(data)
+                    setOldClassInfo(data)
+                    setUpdatedForm({repeat: data.repeat})
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+        }
     }, [classId])
 
     const handleOnChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +63,6 @@ const ClassForm = () => {
         setClassInfo({...classInfo, [key]: newValue})
         setUpdatedForm({...updatedForm, [key]: newValue})
     }
-    console.log(updatedForm)
 
     const handleAddStudent = (student: StudentInfo) => {
         if (!classInfo.studentInfo.some(selctedStudent => selctedStudent.email === student.email)){
@@ -75,19 +81,26 @@ const ClassForm = () => {
         setUpdatedForm({...updatedForm, deletedStudentEmail: deletedStudentEmails})
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (classId){
-            console.log("!!!!!!!!!!!", updatedForm)
             dispatch(updateClassRequest({
                 body: updatedForm,
                 params: classId
             }))
         } else{ // create new class
-            // dispatch(createClassRequest({
-            //     body: form
-            // }))
+            const classModel : ClassModelPreview = 
+            {
+                teacherEmail: classInfo.teacherEmail,
+                className: classInfo.className,
+                startDate: classInfo.startDate,
+                repeat: classInfo.repeat,
+                studentsEmail: classInfo.studentInfo.map(student => student.email)
+            }
+            dispatch(createClassRequest({
+                body: classModel
+            }))
         }
-        history.push('/teacher')
+        history.push('/teacher/classes')
     }
 
     const renderHeaders = () => {
@@ -99,21 +112,29 @@ const ClassForm = () => {
     }
 
     return(
-        <div className="createClassPage">
-            <div className="row">
-                <Button
-                    bgColor="#1E90FF"
-                    hoveredBgColor="#4169E1"
-                    borderColor= "#1E90FF"
-                    hoveredLabelColor="white"
-                    onClick={() => setUpdateMode(!updateMode)}
-                >
-                    <ButtonLabel color="white"> {updateMode?"Cancel":"Edit Class"} </ButtonLabel>
-                </Button>
+        <>
+            <div className="buttons">
+                {
+                    classId && 
+                    <div className="row">
+                        <Button
+                            bgColor="#1E90FF"
+                            hoveredBgColor="#4169E1"
+                            borderColor= "#1E90FF"
+                            hoveredLabelColor="white"
+                            onClick={() => {
+                                setUpdateMode(!updateMode)
+                                setClassInfo(oldClassInfo)
+                            }}
+                        >
+                            <ButtonLabel color="white"> {updateMode?"Cancel":"Edit Class"} </ButtonLabel>
+                        </Button>
+                    </div>
+                }
             </div>
 
-            <div className="container mt-5">
-                <div className="mr-3">
+            <div className="classFormBody mt-5">
+                <div>
                     <h2> Class Detail</h2>
                     <Form>
                         <FormGroup>
@@ -188,7 +209,7 @@ const ClassForm = () => {
                         </FormGroup>
                     </Form>
                 </div>
-
+                
                 <div>
                     <h2> Student List </h2>
                     { updateMode && <SearchStudent handleAddStudent={handleAddStudent}/> }
@@ -219,18 +240,23 @@ const ClassForm = () => {
                         />
                     </div>
                 </div>
+
             </div>
 
-            <div className="container">
-                <Button
-                    bgColor="#1E90FF"
-                    hoveredBgColor="#4169E1"
-                    borderColor= "#1E90FF"
-                    hoveredLabelColor="white"
-                    onClick={() => history.push('/teacher') }
-                >
-                    <ButtonLabel color="white"> Back </ButtonLabel>
-                </Button>
+            <div className="buttons">
+                <div>
+                    <Button
+                        bgColor="#1E90FF"
+                        hoveredBgColor="#4169E1"
+                        borderColor= "#1E90FF"
+                        hoveredLabelColor="white"
+                        onClick={() => history.push('/teacher/classes') }
+                    >
+                        <ButtonLabel color="white"> Back </ButtonLabel>
+                    </Button>
+                </div>
+
+                <div>
                 {
                     updateMode && 
                     <Button
@@ -243,8 +269,9 @@ const ClassForm = () => {
                         <ButtonLabel color="white"> {classId?"Update":"Create"} </ButtonLabel>
                     </Button>
                 }
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 export default ClassForm

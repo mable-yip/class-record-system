@@ -31,22 +31,24 @@ classRouter.patch("/teacher/classes/:classId", authenticateToken, async(request,
     try{
         const classId = request.params.classId
         const updatedFields = request.body
+        const addedStudent = updatedFields.addedStudentEmail?updatedFields.addedStudentEmail:[]
+        const deletedStudent = updatedFields.deletedStudentEmail?updatedFields.deletedStudentEmail:[]
 
-        console.log("before", updatedFields)
+        const { addedStudentEmail, deletedStudentEmail, ...otherFields } = updatedFields
 
-        const addedStudentEmails = updatedFields.addedStudentEmail
-        const deletedStudentEmails = updatedFields.deletedStudentEmail
-        delete updatedFields.addedStudentEmail
-        delete updatedFields.deletedStudentEmail
+        console.log(otherFields)
 
-        console.log("after", updatedFields)
 
-        const updatedDoc = await getCollection('class').findOneAndUpdate({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email}, {$set: updatedFields}, {returnNewDocument: true})
-        console.log(updatedDoc)
-        response.status(200).send(updatedDoc)
+
+        await getCollection('class').update({_id: mongodb.ObjectId(classId)}, {$push: {studentsEmail: { $each: addedStudent}}})
+        await getCollection('class').update({_id: mongodb.ObjectId(classId)}, {$pull: {studentsEmail: {$in: deletedStudent}}})
+
+        const updatedDoc = await getCollection('class').findOneAndUpdate({_id: mongodb.ObjectId(classId), teacherEmail: request.user.email}, {$set: otherFields}, {returnOriginal: false})
+        console.log("updated!!", updatedDoc.value)
+        response.status(200).send(updatedDoc.value)
     } catch(error){
         console.log(error)
-        return response.status(500).send(error.response)
+        return response.status(500).send(error)
     }
 }) 
 

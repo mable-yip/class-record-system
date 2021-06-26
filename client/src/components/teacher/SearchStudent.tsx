@@ -22,11 +22,11 @@ const SearchStudent = (props: Props) => {
     }, [dispatch])
 
     const searchStudents = (input: string) => {
-        let matches = studentArray.filter((student) => {
-            const regex = new RegExp(input, 'gi')
+        const regex = new RegExp(input, 'gi')
+        const matches = studentArray.filter((student) => {
             return student.email.match(regex)
         })
-        let result = matches.slice(0, 3) // limit the result to only 3 students
+        const result = matches.slice(0, 5) // limit the result to only 5 students
         setStudentMatch(result)
         setSelectedIndex(0)
     }
@@ -45,17 +45,21 @@ const SearchStudent = (props: Props) => {
     }
 
     const handleKeyDown= (event: KeyboardEvent) => {
+        if(event.key === 'Enter'){
+            props.handleAddStudent(studentMatch[selectedIndex])
+            setInput('')
+            return
+        }
+        
         if (event.key === 'ArrowDown'){
-            if (selectedIndex < studentMatch.length-1){
-                const currentIdx = selectedIndex
-                setSelectedIndex(currentIdx+1)
+            if (selectedIndex < studentMatch.length - 1){
+                setSelectedIndex(selectedIndex + 1)
                 return
             }
         }
         if (event.key === 'ArrowUp'){
             if (selectedIndex > 0){
-                const currentIdx = selectedIndex
-                setSelectedIndex(currentIdx-1)
+                setSelectedIndex(selectedIndex - 1)
                 return
             }
         } 
