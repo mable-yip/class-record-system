@@ -4,7 +4,7 @@ import { logout } from "../../reducers/actionCreators";
 import jwt_decode from 'jwt-decode';
 import { AdminInfo, StudentInfo, TeacherInfo } from "../../interface/models";
 import "./navbar.css"
-import { Button, ButtonLabel } from './styledComponents';
+import { Button, ButtonLabel } from '../common/styledComponents';
 
 const NavBarComponent = () => {
     const accessToken = localStorage.getItem('profile')
@@ -21,7 +21,7 @@ const NavBarComponent = () => {
     return (
         <nav className="navbar">
             <div> 
-                <h3>{user&&user.userType.charAt(0).toUpperCase() + user?.userType.slice(1)}: {user?.email}</h3>
+                <h3>{user && user.userType.charAt(0).toUpperCase() + user?.userType.slice(1)}: {user?.email}</h3>
             </div>
             <div>            
                 <Button 

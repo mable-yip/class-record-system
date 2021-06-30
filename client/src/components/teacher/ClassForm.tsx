@@ -115,7 +115,7 @@ const ClassForm = () => {
         <>
             <div className="buttons">
                 {
-                    classId && 
+                    classId && !updateMode &&
                     <div className="row">
                         <Button
                             bgColor="#1E90FF"
@@ -127,7 +127,7 @@ const ClassForm = () => {
                                 setClassInfo(oldClassInfo)
                             }}
                         >
-                            <ButtonLabel color="white"> {updateMode?"Cancel":"Edit Class"} </ButtonLabel>
+                            <ButtonLabel color="white"> Edit Class </ButtonLabel>
                         </Button>
                     </div>
                 }
@@ -252,7 +252,7 @@ const ClassForm = () => {
                         hoveredLabelColor="white"
                         onClick={() => history.push('/teacher/classes') }
                     >
-                        <ButtonLabel color="white"> Back </ButtonLabel>
+                        <ButtonLabel color="white"> Cancel </ButtonLabel>
                     </Button>
                 </div>
 

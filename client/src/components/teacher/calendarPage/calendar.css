@@ -4,7 +4,7 @@
   margin: auto;
   width: 100%;
   max-width: 1500px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .calendar {
@@ -13,7 +13,7 @@
   position: relative;
   border-radius: 10px;
   box-shadow: 0 3px 6px #ddd;
-  width: 400px;
+  width: 600px;
   padding: 5px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -32,6 +32,18 @@
   font-size: 1.5em;
 }
 
+.footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 15px;
+}
+
+.footerInfo {
+  font-size: 1em;
+}
+
 .headerIcons span {
   cursor: pointer;
   padding: 5px 10px;
@@ -45,7 +57,7 @@
 }
 
 .weekday {
-  height: 35px;
+  height: 50px;
   display: grid;
   justify-content: center;
   align-items: center;
@@ -55,7 +67,7 @@
   height: 50px;
   display: grid;
   justify-content: center; /*centre in width*/
-  align-items: center; /*centre in height*/
+  align-items: flex-start; /*centre in height*/
   background: #ffffff3b;
   padding: 1px;
   background-clip: content-box;
@@ -80,10 +92,28 @@
   color: white;
 }
 
-.buttons {
-  margin: auto;
-  width: 100%;
-  max-width: 1500px;
-  display: flex;
-  justify-content: space-between;
+.classInMonthTable {
+  width: 750px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.classDetailContainer {
+  padding: 20px 16px;
+}
+
+.classDetailRow {
+  font-size: 1.1rem;
+}
+
+.classDetailRow > span:hover {
+  cursor: pointer;
+  color: #778899;
 }

@@ -1,4 +1,4 @@
-import NavbarComponent from '../common/NavBarComponent'
+import NavbarComponent from '../layout/NavBarComponent'
 import { useDispatch } from 'react-redux';
 import {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom';

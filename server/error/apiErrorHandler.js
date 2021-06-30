@@ -1,10 +1,10 @@
-import ApiError from './ApiError.js'
 
 const apiErrorHandler = (err, req, res, next) => {
     console.log(err)
+    const {code, msg} = err
 
-    if(err instanceof ApiError){
-        res.status(err.code).send(err.msg)
+    if (code && msg){
+        res.status(code).send(msg)
         return
     }
 

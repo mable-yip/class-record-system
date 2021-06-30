@@ -2,13 +2,14 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 50px;
 }
 
 table > thead {
   text-align: left;
   border: 1px solid #ddd;
   color: white;
-  background-color: darkgray;
+  background-color: gray;
 }
 
 table > thead > th {

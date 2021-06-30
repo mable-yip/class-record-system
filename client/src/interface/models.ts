@@ -67,7 +67,7 @@ export interface ClassModel {
     className: string 
     teacherEmail: string
     studentsEmail: string[]
-    startDate: string
+    startDate: string 
     repeat: Repeat
 }
 

@@ -38,20 +38,8 @@ const ManagerClass = () => {
                         hoveredLabelColor="white"
                         onClick={() => history.push('/teacher/classes/new-class')}
                     >
-                        <ButtonLabel color="white"> Add Class </ButtonLabel>
+                        <ButtonLabel color="white"> New Class </ButtonLabel>
                     </Button>
-
-                    <Button 
-                        className="mt-2 ml-3"
-                        bgColor="#1E90FF" 
-                        hoveredBgColor="#4169E1"
-                        borderColor= "#1E90FF"
-                        hoveredLabelColor="white"
-                        onClick={() => history.push('/teacher/calendar')}
-                    >
-                        <ButtonLabel color="white"> Calendar </ButtonLabel>
-                    </Button>
-
                 </div>
 
                 <div className="mt-4">
@@ -62,7 +50,10 @@ const ManagerClass = () => {
                         body={() => Object.values(classList).map(eachClass => 
                             <tr key={eachClass._id}>
                                 <td> 
-                                    <Link to={`/teacher/classes/${eachClass._id}`}>
+                                    <Link to={{
+                                            pathname: `/teacher/classes/${eachClass._id}`,
+                                            state: `/teacher/classes/${eachClass.className}`
+                                        }}>
                                         {eachClass.className}
                                     </Link> 
                                 </td>
@@ -77,7 +68,11 @@ const ManagerClass = () => {
                                         hoveredBgColor="#4169E1"
                                         borderColor= "#1E90FF"
                                         hoveredLabelColor="white"
-                                        onClick={() => history.push(`/teacher/classes/${eachClass._id}`)}>
+                                        onClick={() => history.push({
+                                            pathname: `/teacher/classes/${eachClass._id}`,
+                                            state: `/teacher/classes/${eachClass.className}`
+                                        })}
+                                    >
                                         <ButtonLabel color="white"> Edit </ButtonLabel>
                                     </Button>         
                                     <Button 

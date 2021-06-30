@@ -42,7 +42,7 @@ const LoginPage = () => {
 
     return (
         <div>
-            <Form className="login-form">
+            <Form className="login-form mt-5">
                 <h1 className="text-center"> Class Record System </h1>
                 {
                     loading ? 

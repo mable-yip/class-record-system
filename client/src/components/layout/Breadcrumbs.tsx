@@ -2,10 +2,10 @@ import React from 'react'
 import { Breadcrumb } from 'react-bootstrap'
 import { useHistory, withRouter } from 'react-router-dom'
 
-const Breadcrumbs = (props: { location: { pathname: any } }) => {
-    const { location : { pathname }} = props
+const Breadcrumbs = (props: { location: { pathname: any, state: any } }) => {
+    const { location : { pathname, state }} = props
     const history = useHistory()
-    const pathnames = pathname.split("/").filter((x: string) => x)
+    const pathnames = state?state.split("/").filter((x: string) => x):pathname.split("/").filter((x: string) => x)
     return (
         <Breadcrumb>
             {
@@ -18,8 +18,7 @@ const Breadcrumbs = (props: { location: { pathname: any } }) => {
                             {newName.charAt(0).toUpperCase() + newName.slice(1).toLowerCase()}
                         </Breadcrumb.Item>
                     )
-                })
-                
+                })   
             }
         </Breadcrumb>
     )
