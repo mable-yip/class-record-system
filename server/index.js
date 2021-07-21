@@ -4,11 +4,13 @@ import cors from 'cors'
 import usersRouter from './controller/user.js'
 import classRouter from './controller/class.js'
 import apiErrorHandler from "./error/apiErrorHandler.js"
+import path from 'path'
 
 const app = express();
 app.use(express.json({ limit: '30mb', extended: true }));
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
+app.use(express.static(path.join(__dirname, '../client/build')));
 const PORT = 5000
 
 // Use the routes

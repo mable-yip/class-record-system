@@ -6,7 +6,7 @@ import { createUserFail, createUserRequest, createUserSuccess, deleteUserFail, d
 createClassFail, createClassRequest, createClassSuccess, deleteClassFail, deleteClassRequest, deleteClassSuccess, fetchClassesFail, fetchClassesRequest, fetchClassesSuccess } from '../reducers/actionCreators';
 import { API } from './StoreMiddleware'
 
-const url = 'http://localhost:5000';
+const url = '/';
 axios.defaults.baseURL = url
 
 const actionMap = {
