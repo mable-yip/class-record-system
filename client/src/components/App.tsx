@@ -34,8 +34,8 @@ const App = () => {
           <Route exact path="/login"> <LoginPage /></Route>
           <div>
             { auth.signIn &&<Sidebar />}
+            { auth.signIn && <NavBarComponent/> }
             <div className="appBody">
-              { auth.signIn && <NavBarComponent/> }
               { auth.signIn && <Breadcrumbs/>}
               <PrivateRoute path="/admin" component={ManagerUser} authenticationPath='/login' exact />
               <PrivateRoute path="/student" component={StudentHomePage} authenticationPath='/login' exact />
