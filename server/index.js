@@ -6,11 +6,16 @@ import classRouter from './controller/class.js'
 import apiErrorHandler from "./error/apiErrorHandler.js"
 import path from 'path'
 
+
+console.log(path.resolve())
+
 const app = express();
+const publicPath = path.join(path.resolve(), '..', 'public');
+app.use(express.static(publicPath));
 app.use(express.json({ limit: '30mb', extended: true }));
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
-app.use(express.static(path.join(__dirname, '../client/build')));
+//app.use(express.static(path.join(__dirname, '../client/build')));
 const PORT = 5000
 
 // Use the routes
