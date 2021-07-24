@@ -1,0 +1,10 @@
+.navbar {
+  display: flex;
+  background-color: #333;
+  height: 65px;
+}
+
+.navbar > div {
+  text-align: center;
+  color: #f5f3ed;
+}
